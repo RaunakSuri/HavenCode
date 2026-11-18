@@ -1,22 +1,38 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
+import { registerUser } from "../authSlice";
+import { useEffect } from "react";
 
 const signupSchema = z.object({
-  firstName: z.string().min(3, "Minimum number of characters should be 3"),
+  firstName: z.string().min(3, "Minimum character should be 3"),
   emailId: z.string().email("Invalid Email"),
   password: z.string().min(8, "Password is to weak"),
 });
 
-function SignupPage() {
+function Signup() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated, loading, error } = useSelector(
+    (state) => state.auth,
+  );
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: zodResolver(signupSchema) });
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
+
   const onSubmit = (data) => {
-    console.log(data);
+    dispatch(registerUser(data));
   };
 
   return (
@@ -88,4 +104,4 @@ function SignupPage() {
   );
 }
 
-export default SignupPage;
+export default Signup;
