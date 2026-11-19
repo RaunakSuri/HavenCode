@@ -1,5 +1,5 @@
 import express from "express";
-import { register, login, logout } from "../controllers/userAuth.controller.js";
+import { register, login, logout, deleteProfile } from "../controllers/userAuth.controller.js";
 import { validateUser } from "../middlewares/validateUser.middleware.js";
 
 const userAuthRouter = express.Router();
@@ -24,9 +24,9 @@ userAuthRouter.get("/check", validateUser, (req, res) => {
     _id: req.result._id,
   };
 
-  res.status(201).send({
-    reply,
-    messaeg: "User is Authenticated",
+  res.status(200).send({
+    user: reply,
+    message: "User is Authenticated",
   });
 });
 

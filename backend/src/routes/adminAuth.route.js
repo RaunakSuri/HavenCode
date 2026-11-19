@@ -11,6 +11,6 @@ const adminAuthRouter = express.Router();
 adminAuthRouter.post("/register", register);
 adminAuthRouter.post("/login", login);
 adminAuthRouter.post("/logout", validateAdmin, logout);
-userAuthRouter.delete("/deleteProfile", validateAdmin, deleteProfile);
+adminAuthRouter.delete("/deleteProfile", validateAdmin, deleteProfile);
 
 export { adminAuthRouter };
