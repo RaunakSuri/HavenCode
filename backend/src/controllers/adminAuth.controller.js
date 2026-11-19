@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken";
 const register = async (req, res) => {
   try {
     // First we would have to validate whether the user has sent details in the correct format or not.
-    validate(req.body);
+    await validate(req.body);
 
     const { firstName, emailId, password } = req.body;
     req.body.password = await bcrypt.hash(password, 10);

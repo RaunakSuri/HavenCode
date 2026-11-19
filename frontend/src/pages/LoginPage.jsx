@@ -1,22 +1,26 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
-import { loginUser } from "../authSlice";
-import { useEffect } from "react";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
+import { loginUser } from '../authSlice';
+import { useEffect } from 'react';
+import { Link } from 'react-router';
+import { useState } from 'react';
 
 const signupSchema = z.object({
-  emailId: z.string().email("Invalid Email"),
-  password: z.string().min(8, "Password is to weak"),
+  emailId: z.string().email('Invalid Email'),
+  password: z.string().min(8, 'Password is to weak'),
 });
 
 function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated, loading, error } = useSelector(
-    (state) => state.auth,
+    (state) => state.auth
   );
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -26,7 +30,7 @@ function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/");
+      navigate('/');
     }
   }, [isAuthenticated, navigate]);
 
@@ -36,13 +40,13 @@ function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      {" "}
+      {' '}
       {/* Centering container */}
       <div className="card w-96 bg-base-100 shadow-xl">
-        {" "}
+        {' '}
         {/* Existing card styling */}
         <div className="card-body">
-          <h2 className="card-title justify-center text-3xl">Leetcode</h2>{" "}
+          <h2 className="card-title justify-center text-3xl">Leetcode</h2>{' '}
           {/* Centered title */}
           <form onSubmit={handleSubmit(onSubmit)}>
             {/* Existing form fields */}
@@ -54,8 +58,8 @@ function LoginPage() {
               <input
                 type="email"
                 placeholder="john@example.com"
-                className={`input input-bordered ${errors.emailId && "input-error"}`}
-                {...register("emailId")}
+                className={`input input-bordered ${errors.emailId && 'input-error'}`}
+                {...register('emailId')}
               />
               {errors.emailId && (
                 <span className="text-error">{errors.emailId.message}</span>
@@ -66,22 +70,47 @@ function LoginPage() {
               <label className="label mb-1">
                 <span className="label-text">Password</span>
               </label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                className={`input input-bordered ${errors.password && "input-error"}`}
-                {...register("password")}
-              />
+              <div className="relative flex items-center">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  className={`input input-bordered w-full pr-12 ${errors.password && 'input-error'}`}
+                  {...register('password')}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-2 btn btn-ghost btn-xs text-xs"
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
               {errors.password && (
-                <span className="text-error">{errors.password.message}</span>
+                <span className="text-error text-xs mt-1">
+                  {errors.password.message}
+                </span>
               )}
             </div>
 
             <div className="form-control mt-6 flex justify-center">
-              <button type="submit" className="btn btn-primary">
-                Login
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={loading}
+              >
+                {loading ? (
+                  <span className="loading loading-spinner loading-sm"></span>
+                ) : (
+                  'Login'
+                )}
               </button>
             </div>
+            <p className="text-center text-sm mt-4">
+              Don't have an account?{' '}
+              <Link to="/signup" className="link link-primary font-semibold">
+                Sign Up
+              </Link>
+            </p>
           </form>
         </div>
       </div>

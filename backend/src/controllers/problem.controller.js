@@ -1,6 +1,6 @@
 import { submitBatch, submitToken } from "../utils/problem.util.js";
 import { Problem } from "../models/problem.model.js";
-import { Submissions } from "../models/submission.model.js";
+import { Submission } from "../models/submission.model.js";
 import { User } from "../models/user.model.js";
 
 const createProblem = async (req, res) => {
