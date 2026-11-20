@@ -2,7 +2,6 @@ import { app } from "./app.js";
 import "dotenv/config";
 import { useMongoose } from "./db/db.js";
 import { userAuthRouter } from "./routes/userAuth.route.js";
-import { adminAuthRouter } from "./routes/adminAuth.route.js";
 import { redisClient } from "./db/redis.js";
 import { problemRouter } from "./routes/problem.route.js";
 import { submissionRouter } from "./routes/submission.route.js";
@@ -16,7 +15,6 @@ try {
   });
 
   app.use("/user", userAuthRouter);
-  app.use("/admin", adminAuthRouter);
   app.use("/problem", problemRouter);
   app.use("/submission", submissionRouter);
 } catch (error) {

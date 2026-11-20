@@ -84,6 +84,13 @@ function HomePage() {
         </div>
 
         <div className="flex-none gap-4">
+          {/* Admin Panel Button (Visible ONLY to Admins) */}
+          {user?.role === 'admin' && (
+            <Link to="/admin" className="btn btn-warning btn-sm font-semibold">
+              Admin Panel
+            </Link>
+          )}
+
           {/* Solved Problems Counter */}
           <div className="badge badge-outline badge-primary py-3 px-4 font-medium">
             Solved: {solvedProblems?.length || 0}
@@ -107,14 +114,26 @@ function HomePage() {
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow-lg border border-base-200"
             >
               <li className="menu-title px-4 py-2">
-                <span className="font-bold text-base-content text-sm">
-                  {user?.firstName}
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-base-content text-sm">
+                    {user?.firstName}
+                  </span>
+                  {user?.role === 'admin' && (
+                    <span className="badge badge-warning badge-xs">Admin</span>
+                  )}
+                </div>
                 <span className="text-xs text-base-content/60 font-normal">
                   {user?.emailId}
                 </span>
               </li>
               <div className="divider my-1"></div>
+              {user?.role === 'admin' && (
+                <li>
+                  <Link to="/admin" className="font-medium text-warning">
+                    Manage Problems
+                  </Link>
+                </li>
+              )}
               <li>
                 <button onClick={handleLogout} className="text-error font-medium">
                   Logout

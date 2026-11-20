@@ -25,6 +25,42 @@ export const fetchSolvedProblems = createAsyncThunk(
   }
 );
 
+export const createProblem = createAsyncThunk(
+  'problems/create',
+  async (problemData, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.post('/problem/createProblem', problemData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const updateProblem = createAsyncThunk(
+  'problems/update',
+  async ({ id, problemData }, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.patch(`/problem/update/${id}`, problemData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const deleteProblem = createAsyncThunk(
+  'problems/delete',
+  async (id, { rejectWithValue }) => {
+    try {
+      await axiosClient.delete(`/problem/delete/${id}`);
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 const problemSlice = createSlice({
   name: 'problems',
   initialState: {
@@ -53,6 +89,11 @@ const problemSlice = createSlice({
       // Solved Problems
       .addCase(fetchSolvedProblems.fulfilled, (state, action) => {
         state.solvedProblems = action.payload;
+      })
+
+      // Delete Problem (removes from list instantly)
+      .addCase(deleteProblem.fulfilled, (state, action) => {
+        state.problems = state.problems.filter((p) => p._id !== action.payload);
       });
   },
 });
