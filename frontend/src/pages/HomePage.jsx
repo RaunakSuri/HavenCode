@@ -127,6 +127,11 @@ function HomePage() {
                 </span>
               </li>
               <div className="divider my-1"></div>
+              <li>
+                <Link to="/submissions" className="font-medium">
+                  My Submissions
+                </Link>
+              </li>
               {user?.role === 'admin' && (
                 <li>
                   <Link to="/admin" className="font-medium text-warning">

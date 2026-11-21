@@ -126,4 +126,16 @@ const runCode = async (req, res) => {
   }
 };
 
-export { submitCode, runCode };
+const getAllUserSubmissions = async (req, res) => {
+  try {
+    const userId = req.result._id;
+    const submissions = await Submission.find({ userId })
+      .populate("problemId", "title difficulty tags")
+      .sort({ createdAt: -1 });
+    res.status(200).json(submissions);
+  } catch (error) {
+    res.status(500).send(`Error Encountered : ${error}`);
+  }
+};
+
+export { submitCode, runCode, getAllUserSubmissions };

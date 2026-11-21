@@ -185,14 +185,9 @@ const getSolvedProblems = async (req, res) => {
 const submittedSolutions = async (req, res) => {
   try {
     const userId = req.result._id;
-    const problemId = req.params.pid;
+    const problemId = req.params.pid || req.query.pid;
 
-    const ans = await Submissions.find({ userId, problemId });
-    if (ans.length == 0) {
-      res
-        .status(200)
-        .send("User has not made any submissions for this problem");
-    }
+    const ans = await Submission.find({ userId, problemId }).sort({ createdAt: -1 });
     res.status(200).send(ans);
   } catch (error) {
     res.status(500).send(`Error Encountered : ${error}`);

@@ -5,6 +5,8 @@ import HomePage from "./pages/HomePage.jsx";
 import AdminPanel from "./pages/AdminPanel.jsx";
 import CreateProblemPage from "./pages/CreateProblemPage.jsx";
 import EditProblemPage from "./pages/EditProblemPage.jsx";
+import SubmissionsPage from "./pages/SubmissionsPage.jsx";
+import ProblemPage from "./pages/ProblemPage.jsx";
 import AdminRoute from "./components/AdminRoute.jsx";
 import { useDispatch, useSelector } from 'react-redux';
 import { checkAuth } from "./authSlice";
@@ -28,6 +30,14 @@ function App(){
       <Route path="/" element={isAuthenticated ?<HomePage></HomePage>:<Navigate to="/signup" />}></Route>
       <Route path="/login" element={isAuthenticated?<Navigate to="/" />:<LoginPage></LoginPage>}></Route>
       <Route path="/signup" element={isAuthenticated?<Navigate to="/" />:<SignupPage></SignupPage>}></Route>
+      <Route
+        path="/submissions"
+        element={isAuthenticated ? <SubmissionsPage /> : <Navigate to="/login" />}
+      />
+      <Route
+        path="/problem/:id"
+        element={isAuthenticated ? <ProblemPage /> : <Navigate to="/login" />}
+      />
       
       {/* Protected Admin Routes */}
       <Route

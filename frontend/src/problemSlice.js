@@ -25,6 +25,18 @@ export const fetchSolvedProblems = createAsyncThunk(
   }
 );
 
+export const fetchUserSubmissions = createAsyncThunk(
+  'problems/fetchSubmissions',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.get('/submission/mySubmissions');
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 export const createProblem = createAsyncThunk(
   'problems/create',
   async (problemData, { rejectWithValue }) => {
@@ -66,6 +78,7 @@ const problemSlice = createSlice({
   initialState: {
     problems: [],
     solvedProblems: [],
+    submissions: [],
     loading: false,
     error: null,
   },
@@ -89,6 +102,11 @@ const problemSlice = createSlice({
       // Solved Problems
       .addCase(fetchSolvedProblems.fulfilled, (state, action) => {
         state.solvedProblems = action.payload;
+      })
+
+      // User Submissions
+      .addCase(fetchUserSubmissions.fulfilled, (state, action) => {
+        state.submissions = action.payload;
       })
 
       // Delete Problem (removes from list instantly)
