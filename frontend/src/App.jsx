@@ -38,8 +38,7 @@ function App(){
         path="/problem/:id"
         element={isAuthenticated ? <ProblemPage /> : <Navigate to="/login" />}
       />
-      
-      {/* Protected Admin Routes */}
+      {/* ADMIN ROUTES */}
       <Route
         path="/admin"
         element={

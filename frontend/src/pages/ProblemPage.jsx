@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router';
 import Editor from '@monaco-editor/react';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import axiosClient from '../utils/axiosClient';
 
 function ProblemPage() {
@@ -11,13 +13,24 @@ function ProblemPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Active Left Tab: 'description' | 'submissions'
+  // Active Left Tab: 'description' | 'submissions' | 'ai'
   const [leftTab, setLeftTab] = useState('description');
   const [pastSubmissions, setPastSubmissions] = useState([]);
   const [loadingPastSubs, setLoadingPastSubs] = useState(false);
 
+  // AI Assistant State
+  const [messages, setMessages] = useState([
+    {
+      role: 'assistant',
+      content:
+        "👋 Hi! I'm your **Gemini AI Coding Assistant**. Need a hint, problem explanation, time complexity breakdown, or help debugging your code? Ask me below or click one of the quick prompts!",
+    },
+  ]);
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+
   // Editor State
-  const [language, setLanguage] = useState('javascript');
+  const [language, setLanguage] = useState('c++');
   const [code, setCode] = useState('');
   const [theme, setTheme] = useState('vs-dark');
 
@@ -40,9 +53,9 @@ function ProblemPage() {
         const data = res.data;
         setProblem(data);
 
-        // Find initial code for default language (javascript)
+        // Find initial code for default language (c++)
         const defaultStart = data.startCode?.find(
-          (sc) => sc.language.toLowerCase() === 'javascript'
+          (sc) => sc.language.toLowerCase() === 'c++'
         );
         if (defaultStart) {
           setCode(defaultStart.initialCode);
@@ -125,6 +138,46 @@ function ProblemPage() {
       setSubmitResult({ error: err.response?.data || err.message || 'Submission failed' });
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  // Send AI Message
+  const handleSendAiMessage = async (customPrompt) => {
+    const promptToSend = customPrompt || aiPrompt;
+    if (!promptToSend.trim() || aiLoading) return;
+
+    const userMessage = { role: 'user', content: promptToSend };
+    setMessages((prev) => [...prev, userMessage]);
+    setAiPrompt('');
+    setAiLoading(true);
+
+    try {
+      const res = await axiosClient.post('/ai/chat', {
+        prompt: promptToSend,
+        problemTitle: problem?.title,
+        problemDescription: problem?.description,
+        userCode: code,
+        language: language,
+      });
+
+      const assistantMessage = {
+        role: 'assistant',
+        content: res.data.reply || 'No response from AI.',
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
+    } catch (err) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content:
+            err.response?.data && typeof err.response.data === 'string'
+              ? `⚠️ ${err.response.data}`
+              : '⚠️ The AI Assistant is temporarily busy. Please wait a moment and try again!',
+        },
+      ]);
+    } finally {
+      setAiLoading(false);
     }
   };
 
@@ -243,11 +296,19 @@ function ProblemPage() {
             >
               Submissions
             </button>
+            <button
+              onClick={() => setLeftTab('ai')}
+              className={`tab text-xs font-semibold flex items-center gap-1 ${
+                leftTab === 'ai' ? 'tab-active text-warning font-bold' : 'text-warning/80'
+              }`}
+            >
+              ✨ AI Assistant
+            </button>
           </div>
 
           {/* Left Panel Content */}
           <div className="flex-1 p-6 overflow-y-auto space-y-6">
-            {leftTab === 'description' ? (
+            {leftTab === 'description' && (
               <>
                 {/* Title & Metadata */}
                 <div>
@@ -291,7 +352,9 @@ function ProblemPage() {
                   ))}
                 </div>
               </>
-            ) : (
+            )}
+
+            {leftTab === 'submissions' && (
               /* Submissions Tab */
               <div className="space-y-4">
                 <h3 className="font-bold text-base">My Submissions for this Problem</h3>
@@ -341,6 +404,159 @@ function ProblemPage() {
                     </table>
                   </div>
                 )}
+              </div>
+            )}
+
+            {leftTab === 'ai' && (
+              /* AI Assistant Tab */
+              <div className="flex flex-col h-full space-y-4">
+                <div className="flex items-center justify-between border-b border-base-200 pb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">✨</span>
+                    <div>
+                      <h3 className="font-bold text-sm">Gemini AI Coding Mentor</h3>
+                      <p className="text-[11px] text-base-content/60">
+                        Context-aware tutor for hints, logic, and debugging
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() =>
+                      setMessages([
+                        {
+                          role: 'assistant',
+                          content:
+                            "Chat cleared! How can I help you with this problem or your code?",
+                        },
+                      ])
+                    }
+                    className="btn btn-ghost btn-xs text-xs"
+                  >
+                    Clear Chat
+                  </button>
+                </div>
+
+                {/* Quick Action Chips */}
+                <div className="flex flex-wrap gap-1.5">
+                  <button
+                    onClick={() =>
+                      handleSendAiMessage(
+                        "Give me a subtle hint to point me in the right direction without spoiling the full solution."
+                      )
+                    }
+                    disabled={aiLoading}
+                    className="btn btn-xs btn-outline btn-warning"
+                  >
+                    💡 Hint
+                  </button>
+                  <button
+                    onClick={() =>
+                      handleSendAiMessage(
+                        "Explain this problem with a simple real-world analogy and trace Example 1 step by step."
+                      )
+                    }
+                    disabled={aiLoading}
+                    className="btn btn-xs btn-outline"
+                  >
+                    📖 Explain Problem
+                  </button>
+                  <button
+                    onClick={() =>
+                      handleSendAiMessage(
+                        "Review my current code in the editor. Are there any edge cases, logical bugs, or syntax errors? Explain without immediately rewriting the entire solution."
+                      )
+                    }
+                    disabled={aiLoading}
+                    className="btn btn-xs btn-outline btn-info"
+                  >
+                    🐛 Debug My Code
+                  </button>
+                  <button
+                    onClick={() =>
+                      handleSendAiMessage(
+                        "What is the optimal Time and Space complexity for solving this problem, and what data structures achieve it?"
+                      )
+                    }
+                    disabled={aiLoading}
+                    className="btn btn-xs btn-outline btn-success"
+                  >
+                    ⏱️ Complexity
+                  </button>
+                </div>
+
+                {/* Messages Container */}
+                <div className="flex-1 overflow-y-auto space-y-3 pr-1 min-h-[320px]">
+                  {messages.map((msg, idx) => (
+                    <div
+                      key={idx}
+                      className={`chat ${
+                        msg.role === 'user' ? 'chat-end' : 'chat-start'
+                      }`}
+                    >
+                      <div className="chat-header text-[10px] text-base-content/50 mb-1">
+                        {msg.role === 'user' ? 'You' : 'Gemini AI'}
+                      </div>
+                      <div
+                        className={`chat-bubble text-xs leading-relaxed ${
+                          msg.role === 'user'
+                            ? 'chat-bubble-primary text-primary-content whitespace-pre-wrap'
+                            : 'chat-bubble-neutral bg-base-200 text-base-content border border-base-300'
+                        }`}
+                      >
+                        {msg.role === 'user' ? (
+                          msg.content
+                        ) : (
+                          <div className="prose prose-xs max-w-none text-xs leading-relaxed space-y-2 dark:prose-invert break-words [&_table]:table [&_table]:table-zebra [&_table]:table-xs [&_table]:my-2 [&_th]:border-b [&_td]:py-1 [&_pre]:bg-base-300 [&_pre]:p-2 [&_pre]:rounded [&_code]:font-mono">
+                            <Markdown remarkPlugins={[remarkGfm]}>
+                              {msg.content}
+                            </Markdown>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+
+                  {aiLoading && (
+                    <div className="chat chat-start">
+                      <div className="chat-header text-[10px] text-base-content/50 mb-1">
+                        Gemini AI
+                      </div>
+                      <div className="chat-bubble bg-base-200 border border-base-300 flex items-center gap-2 text-xs">
+                        <span className="loading loading-dots loading-xs text-warning"></span>
+                        <span className="text-base-content/70">Thinking...</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Chat Input Bar */}
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSendAiMessage();
+                  }}
+                  className="pt-2 border-t border-base-200 flex gap-2"
+                >
+                  <input
+                    type="text"
+                    value={aiPrompt}
+                    onChange={(e) => setAiPrompt(e.target.value)}
+                    placeholder="Ask Gemini a question about this problem..."
+                    disabled={aiLoading}
+                    className="input input-bordered input-sm flex-1 text-xs"
+                  />
+                  <button
+                    type="submit"
+                    disabled={aiLoading || !aiPrompt.trim()}
+                    className="btn btn-warning btn-sm text-xs font-semibold"
+                  >
+                    {aiLoading ? (
+                      <span className="loading loading-spinner loading-xs"></span>
+                    ) : (
+                      'Send'
+                    )}
+                  </button>
+                </form>
               </div>
             )}
           </div>
