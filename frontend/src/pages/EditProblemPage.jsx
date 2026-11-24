@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate, useParams, Link } from 'react-router';
 import { updateProblem } from '../problemSlice';
 import axiosClient from '../utils/axiosClient';
+import ThemeToggle from '../components/ThemeToggle';
 
 const DEFAULT_LANGUAGES = ['javascript', 'c++', 'java', 'python'];
 
@@ -133,347 +134,378 @@ function EditProblemPage() {
 
   if (loadingProblem) {
     return (
-      <div className="min-h-screen flex justify-center items-center bg-base-200">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
+      <div className="min-h-screen flex flex-col justify-center items-center bg-[#0F131E]">
+        <div className="w-12 h-12 rounded-2xl bg-[#262A36] flex items-center justify-center mb-4">
+          <div className="w-6 h-6 border-2 border-[#5DE6FF] border-t-transparent rounded-full animate-spin"></div>
+        </div>
+        <p className="font-display font-medium text-[#94A3B8] text-sm">Loading problem...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-base-200 pb-12">
-      {/* Navbar */}
-      <div className="navbar bg-base-100 shadow px-6 flex justify-between items-center mb-6">
-        <div className="flex items-center gap-3">
-          <Link to="/" className="btn btn-ghost text-xl font-bold tracking-wider">
-            LeetCode
-          </Link>
-          <span className="badge badge-info font-semibold">Edit Problem</span>
+    <div className="min-h-screen bg-[#0F131E] pb-20 font-sans text-[#DFE2F2] selection:bg-cyan-500/20 selection:text-cyan-300">
+      {/* ================= UNIFIED NAVBAR ================= */}
+      <header className="sticky top-0 z-40 bg-[#0B0F1A]/85 backdrop-blur-xl border-b border-[#263049] px-6 sm:px-10 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-2.5 group">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3B82F6] to-[#22D3EE] flex items-center justify-center text-[#0A0E19] font-bold text-base shadow-[0_0_16px_rgba(34,211,238,0.3)] group-hover:scale-105 transition-all duration-200">
+                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                  <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
+                </svg>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xl font-extrabold tracking-tight text-[#DFE2F2] font-display group-hover:text-white transition-colors">
+                  HavenCode
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#5DE6FF] animate-pulse"></span>
+              </div>
+            </Link>
+            <span className="text-[#64748B] font-light">/</span>
+            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#1B1F2B] text-[#5DE6FF] border border-[#263049]">
+              Edit Problem
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Link
+              to="/admin"
+              className="px-3.5 py-2 rounded-xl text-xs font-semibold text-[#94A3B8] hover:text-[#DFE2F2] hover:bg-[#1B1F2B] transition-colors"
+            >
+              Cancel & Back
+            </Link>
+          </div>
         </div>
-        <Link to="/admin" className="btn btn-ghost btn-sm">
-          Cancel & Back
-        </Link>
-      </div>
+      </header>
 
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="bg-base-100 rounded-xl shadow p-8">
-          <h1 className="text-2xl font-bold mb-2">Edit Problem</h1>
-          <p className="text-sm text-base-content/70 mb-6">
-            Update problem details, test cases, or starter code.
+      {/* ================= PAGE HERO & TITLE ================= */}
+      <main className="max-w-7xl mx-auto px-6 sm:px-10 pt-10 sm:pt-12">
+        <div className="mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#262A36] text-[#5DE6FF] border border-[#424754]/40 mb-3">
+            <span className="w-2 h-2 rounded-full bg-[#5DE6FF] animate-pulse"></span>
+            <span>Admin Workspace</span>
+          </div>
+          <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-[#DFE2F2] tracking-tight">
+            Edit Problem
+          </h1>
+          <p className="text-[#94A3B8] text-sm sm:text-base mt-1.5 max-w-xl">
+            Update problem details, difficulty, test cases, or starter code.
           </p>
-
-          {error && (
-            <div className="alert alert-error text-sm mb-6">
-              <span>{typeof error === 'string' ? error : JSON.stringify(error)}</span>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Title */}
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-semibold">Problem Title</span>
-              </label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-                className="input input-bordered w-full"
-              />
-            </div>
-
-            {/* Difficulty & Tag */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text font-semibold">Difficulty</span>
-                </label>
-                <select
-                  value={difficulty}
-                  onChange={(e) => setDifficulty(e.target.value)}
-                  className="select select-bordered w-full"
-                >
-                  <option value="easy">Easy</option>
-                  <option value="medium">Medium</option>
-                  <option value="hard">Hard</option>
-                </select>
-              </div>
-
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text font-semibold">Category / Tag</span>
-                </label>
-                <select
-                  value={tags}
-                  onChange={(e) => setTags(e.target.value)}
-                  className="select select-bordered w-full"
-                >
-                  <option value="array">Array</option>
-                  <option value="strings">Strings</option>
-                  <option value="linkedList">Linked List</option>
-                  <option value="tree">Tree</option>
-                  <option value="heap">Heap</option>
-                  <option value="graph">Graph</option>
-                  <option value="dp">Dynamic Programming</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Description */}
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-semibold">Problem Description</span>
-              </label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-                rows={5}
-                className="textarea textarea-bordered w-full font-mono text-sm"
-              />
-            </div>
-
-            {/* ================= VISIBLE TEST CASES ================= */}
-            <div className="border border-base-300 rounded-lg p-4">
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="font-bold text-lg">Visible Test Cases</h3>
-                <button
-                  type="button"
-                  onClick={addVisibleTestCase}
-                  className="btn btn-outline btn-primary btn-xs"
-                >
-                  + Add Example
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                {visibleTestCases.map((tc, index) => (
-                  <div key={index} className="bg-base-200 p-4 rounded-lg space-y-2 relative">
-                    {visibleTestCases.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeVisibleTestCase(index)}
-                        className="btn btn-ghost btn-circle btn-xs text-error absolute top-2 right-2"
-                      >
-                        ✕
-                      </button>
-                    )}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                      <div>
-                        <label className="label py-1 text-xs font-semibold">Input (STDIN)</label>
-                        <input
-                          type="text"
-                          value={tc.input}
-                          onChange={(e) => updateVisibleTestCase(index, 'input', e.target.value)}
-                          required
-                          className="input input-bordered input-sm w-full font-mono text-xs"
-                        />
-                      </div>
-                      <div>
-                        <label className="label py-1 text-xs font-semibold">Expected Output</label>
-                        <input
-                          type="text"
-                          value={tc.output}
-                          onChange={(e) => updateVisibleTestCase(index, 'output', e.target.value)}
-                          required
-                          className="input input-bordered input-sm w-full font-mono text-xs"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="label py-1 text-xs font-semibold">Explanation</label>
-                      <input
-                        type="text"
-                        value={tc.explanation}
-                        onChange={(e) => updateVisibleTestCase(index, 'explanation', e.target.value)}
-                        required
-                        className="input input-bordered input-sm w-full text-xs"
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* ================= HIDDEN TEST CASES ================= */}
-            <div className="border border-base-300 rounded-lg p-4">
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="font-bold text-lg">Hidden Test Cases</h3>
-                <button
-                  type="button"
-                  onClick={addHiddenTestCase}
-                  className="btn btn-outline btn-primary btn-xs"
-                >
-                  + Add Hidden Case
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                {hiddenTestCases.map((tc, index) => (
-                  <div key={index} className="bg-base-200 p-4 rounded-lg relative">
-                    {hiddenTestCases.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeHiddenTestCase(index)}
-                        className="btn btn-ghost btn-circle btn-xs text-error absolute top-2 right-2"
-                      >
-                        ✕
-                      </button>
-                    )}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                      <div>
-                        <label className="label py-1 text-xs font-semibold">Input (STDIN)</label>
-                        <input
-                          type="text"
-                          value={tc.input}
-                          onChange={(e) => updateHiddenTestCase(index, 'input', e.target.value)}
-                          required
-                          className="input input-bordered input-sm w-full font-mono text-xs"
-                        />
-                      </div>
-                      <div>
-                        <label className="label py-1 text-xs font-semibold">Expected Output</label>
-                        <input
-                          type="text"
-                          value={tc.output}
-                          onChange={(e) => updateHiddenTestCase(index, 'output', e.target.value)}
-                          required
-                          className="input input-bordered input-sm w-full font-mono text-xs"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* ================= START CODE ================= */}
-            <div className="border border-base-300 rounded-lg p-4">
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="font-bold text-lg">Starter Code Templates</h3>
-                <button
-                  type="button"
-                  onClick={addStartCode}
-                  className="btn btn-outline btn-primary btn-xs"
-                >
-                  + Add Template
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                {startCode.map((sc, index) => (
-                  <div key={index} className="bg-base-200 p-4 rounded-lg space-y-2 relative">
-                    {startCode.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeStartCode(index)}
-                        className="btn btn-ghost btn-circle btn-xs text-error absolute top-2 right-2"
-                      >
-                        ✕
-                      </button>
-                    )}
-                    <div className="w-48">
-                      <label className="label py-1 text-xs font-semibold">Language</label>
-                      <select
-                        value={sc.language}
-                        onChange={(e) => updateStartCode(index, 'language', e.target.value)}
-                        className="select select-bordered select-sm w-full capitalize"
-                      >
-                        {DEFAULT_LANGUAGES.map((lang) => (
-                          <option key={lang} value={lang}>{lang}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="label py-1 text-xs font-semibold">Initial Code</label>
-                      <textarea
-                        value={sc.initialCode}
-                        onChange={(e) => updateStartCode(index, 'initialCode', e.target.value)}
-                        required
-                        rows={3}
-                        className="textarea textarea-bordered w-full font-mono text-xs"
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* ================= REFERENCE SOLUTIONS ================= */}
-            <div className="border border-base-300 rounded-lg p-4">
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="font-bold text-lg">Reference Solutions</h3>
-                <button
-                  type="button"
-                  onClick={addReferenceSolution}
-                  className="btn btn-outline btn-primary btn-xs"
-                >
-                  + Add Solution
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                {referenceSolution.map((rs, index) => (
-                  <div key={index} className="bg-base-200 p-4 rounded-lg space-y-2 relative">
-                    {referenceSolution.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeReferenceSolution(index)}
-                        className="btn btn-ghost btn-circle btn-xs text-error absolute top-2 right-2"
-                      >
-                        ✕
-                      </button>
-                    )}
-                    <div className="w-48">
-                      <label className="label py-1 text-xs font-semibold">Language</label>
-                      <select
-                        value={rs.language}
-                        onChange={(e) => updateReferenceSolution(index, 'language', e.target.value)}
-                        className="select select-bordered select-sm w-full capitalize"
-                      >
-                        {DEFAULT_LANGUAGES.map((lang) => (
-                          <option key={lang} value={lang}>{lang}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="label py-1 text-xs font-semibold">Complete Working Code</label>
-                      <textarea
-                        value={rs.completeCode}
-                        onChange={(e) => updateReferenceSolution(index, 'completeCode', e.target.value)}
-                        required
-                        rows={4}
-                        className="textarea textarea-bordered w-full font-mono text-xs"
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-3 pt-4 border-t border-base-200">
-              <Link to="/admin" className="btn btn-ghost">
-                Cancel
-              </Link>
-              <button
-                type="submit"
-                className="btn btn-primary min-w-32"
-                disabled={submitting}
-              >
-                {submitting ? (
-                  <span className="flex items-center gap-2">
-                    <span className="loading loading-spinner loading-sm"></span>
-                    Updating via Judge0...
-                  </span>
-                ) : (
-                  'Update Problem'
-                )}
-              </button>
-            </div>
-          </form>
         </div>
-      </div>
+
+        <div className="max-w-4xl">
+          <div className="bg-[#171B27] rounded-3xl shadow-soft border border-[#263049] p-6 sm:p-8">
+            {error && (
+              <div className="p-4 rounded-2xl bg-rose-950/40 border border-rose-500/30 text-rose-400 text-sm mb-6 flex items-center gap-3">
+                <span className="font-bold text-base">!</span>
+                <span>{typeof error === 'string' ? error : JSON.stringify(error)}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Title */}
+              <div>
+                <label className="block text-xs font-semibold text-[#DFE2F2] mb-1.5">Problem Title</label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] text-sm focus:outline-none focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6]"
+                />
+              </div>
+
+              {/* Difficulty & Tag */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-[#DFE2F2] mb-1.5">Difficulty</label>
+                  <select
+                    value={difficulty}
+                    onChange={(e) => setDifficulty(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] text-sm focus:outline-none focus:border-[#3B82F6] capitalize"
+                  >
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#DFE2F2] mb-1.5">Category / Tag</label>
+                  <select
+                    value={tags}
+                    onChange={(e) => setTags(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] text-sm focus:outline-none focus:border-[#3B82F6]"
+                  >
+                    <option value="array">Array</option>
+                    <option value="strings">Strings</option>
+                    <option value="linkedList">Linked List</option>
+                    <option value="tree">Tree</option>
+                    <option value="heap">Heap</option>
+                    <option value="graph">Graph</option>
+                    <option value="dp">Dynamic Programming</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-xs font-semibold text-[#DFE2F2] mb-1.5">Problem Description</label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                  rows={5}
+                  className="w-full px-4 py-3 rounded-xl bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] text-sm font-mono focus:outline-none focus:border-[#3B82F6]"
+                />
+              </div>
+
+              {/* ================= VISIBLE TEST CASES ================= */}
+              <div className="border border-[#263049] rounded-2xl p-5 bg-[#101524]">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-bold text-base text-[#DFE2F2]">Visible Test Cases</h3>
+                  <button
+                    type="button"
+                    onClick={addVisibleTestCase}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#1B1F2B] hover:bg-[#262A36] text-[#5DE6FF] border border-[#263049] transition-all"
+                  >
+                    + Add Example
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {visibleTestCases.map((tc, index) => (
+                    <div key={index} className="bg-[#171B27] p-4 rounded-xl border border-[#263049] space-y-3 relative">
+                      {visibleTestCases.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeVisibleTestCase(index)}
+                          className="w-6 h-6 rounded-lg bg-rose-950/40 text-rose-400 hover:bg-rose-950/60 border border-rose-500/30 flex items-center justify-center text-xs absolute top-3 right-3 transition-colors"
+                        >
+                          ✕
+                        </button>
+                      )}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium text-[#94A3B8] mb-1">Input</label>
+                          <input
+                            type="text"
+                            value={tc.input}
+                            onChange={(e) => updateVisibleTestCase(index, 'input', e.target.value)}
+                            required
+                            className="w-full px-3 py-2 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] font-mono text-xs focus:outline-none focus:border-[#3B82F6]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-[#94A3B8] mb-1">Expected Output</label>
+                          <input
+                            type="text"
+                            value={tc.output}
+                            onChange={(e) => updateVisibleTestCase(index, 'output', e.target.value)}
+                            required
+                            className="w-full px-3 py-2 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] font-mono text-xs focus:outline-none focus:border-[#3B82F6]"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-[#94A3B8] mb-1">Explanation</label>
+                        <input
+                          type="text"
+                          value={tc.explanation}
+                          onChange={(e) => updateVisibleTestCase(index, 'explanation', e.target.value)}
+                          required
+                          className="w-full px-3 py-2 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] text-xs focus:outline-none focus:border-[#3B82F6]"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ================= HIDDEN TEST CASES ================= */}
+              <div className="border border-[#263049] rounded-2xl p-5 bg-[#101524]">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-bold text-base text-[#DFE2F2]">Hidden Test Cases</h3>
+                  <button
+                    type="button"
+                    onClick={addHiddenTestCase}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#1B1F2B] hover:bg-[#262A36] text-[#5DE6FF] border border-[#263049] transition-all"
+                  >
+                    + Add Hidden Case
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {hiddenTestCases.map((tc, index) => (
+                    <div key={index} className="bg-[#171B27] p-4 rounded-xl border border-[#263049] relative">
+                      {hiddenTestCases.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeHiddenTestCase(index)}
+                          className="w-6 h-6 rounded-lg bg-rose-950/40 text-rose-400 hover:bg-rose-950/60 border border-rose-500/30 flex items-center justify-center text-xs absolute top-3 right-3 transition-colors"
+                        >
+                          ✕
+                        </button>
+                      )}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium text-[#94A3B8] mb-1">Input</label>
+                          <input
+                            type="text"
+                            value={tc.input}
+                            onChange={(e) => updateHiddenTestCase(index, 'input', e.target.value)}
+                            required
+                            className="w-full px-3 py-2 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] font-mono text-xs focus:outline-none focus:border-[#3B82F6]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-[#94A3B8] mb-1">Expected Output</label>
+                          <input
+                            type="text"
+                            value={tc.output}
+                            onChange={(e) => updateHiddenTestCase(index, 'output', e.target.value)}
+                            required
+                            className="w-full px-3 py-2 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] font-mono text-xs focus:outline-none focus:border-[#3B82F6]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ================= START CODE ================= */}
+              <div className="border border-[#263049] rounded-2xl p-5 bg-[#101524]">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-bold text-base text-[#DFE2F2]">Starter Code Templates</h3>
+                  <button
+                    type="button"
+                    onClick={addStartCode}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#1B1F2B] hover:bg-[#262A36] text-[#5DE6FF] border border-[#263049] transition-all"
+                  >
+                    + Add Template
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {startCode.map((sc, index) => (
+                    <div key={index} className="bg-[#171B27] p-4 rounded-xl border border-[#263049] space-y-3 relative">
+                      {startCode.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeStartCode(index)}
+                          className="w-6 h-6 rounded-lg bg-rose-950/40 text-rose-400 hover:bg-rose-950/60 border border-rose-500/30 flex items-center justify-center text-xs absolute top-3 right-3 transition-colors"
+                        >
+                          ✕
+                        </button>
+                      )}
+                      <div className="w-48">
+                        <label className="block text-xs font-medium text-[#94A3B8] mb-1">Language</label>
+                        <select
+                          value={sc.language}
+                          onChange={(e) => updateStartCode(index, 'language', e.target.value)}
+                          className="w-full px-3 py-1.5 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] text-xs capitalize focus:outline-none focus:border-[#3B82F6]"
+                        >
+                          {DEFAULT_LANGUAGES.map((lang) => (
+                            <option key={lang} value={lang}>{lang}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-[#94A3B8] mb-1">Initial Code</label>
+                        <textarea
+                          value={sc.initialCode}
+                          onChange={(e) => updateStartCode(index, 'initialCode', e.target.value)}
+                          required
+                          rows={3}
+                          className="w-full px-3 py-2 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] font-mono text-xs focus:outline-none focus:border-[#3B82F6]"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* ================= REFERENCE SOLUTIONS ================= */}
+              <div className="border border-[#263049] rounded-2xl p-5 bg-[#101524]">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-bold text-base text-[#DFE2F2]">Reference Solutions</h3>
+                  <button
+                    type="button"
+                    onClick={addReferenceSolution}
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#1B1F2B] hover:bg-[#262A36] text-[#5DE6FF] border border-[#263049] transition-all"
+                  >
+                    + Add Solution
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {referenceSolution.map((rs, index) => (
+                    <div key={index} className="bg-[#171B27] p-4 rounded-xl border border-[#263049] space-y-3 relative">
+                      {referenceSolution.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeReferenceSolution(index)}
+                          className="w-6 h-6 rounded-lg bg-rose-950/40 text-rose-400 hover:bg-rose-950/60 border border-rose-500/30 flex items-center justify-center text-xs absolute top-3 right-3 transition-colors"
+                        >
+                          ✕
+                        </button>
+                      )}
+                      <div className="w-48">
+                        <label className="block text-xs font-medium text-[#94A3B8] mb-1">Language</label>
+                        <select
+                          value={rs.language}
+                          onChange={(e) => updateReferenceSolution(index, 'language', e.target.value)}
+                          className="w-full px-3 py-1.5 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] text-xs capitalize focus:outline-none focus:border-[#3B82F6]"
+                        >
+                          {DEFAULT_LANGUAGES.map((lang) => (
+                            <option key={lang} value={lang}>{lang}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-[#94A3B8] mb-1">Complete Working Code</label>
+                        <textarea
+                          value={rs.completeCode}
+                          onChange={(e) => updateReferenceSolution(index, 'completeCode', e.target.value)}
+                          required
+                          rows={4}
+                          className="w-full px-3 py-2 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] font-mono text-xs focus:outline-none focus:border-[#3B82F6]"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div className="flex justify-end gap-3 pt-4 border-t border-[#263049]">
+                <Link
+                  to="/admin"
+                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-[#94A3B8] hover:bg-[#1B1F2B] hover:text-[#DFE2F2] transition-colors"
+                >
+                  Cancel
+                </Link>
+                <button
+                  type="submit"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-[#3B82F6] to-[#22D3EE] text-[#0A0E19] shadow-[0_0_16px_rgba(34,211,238,0.3)] hover:shadow-[0_0_24px_rgba(34,211,238,0.5)] active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={submitting}
+                >
+                  {submitting ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-3.5 h-3.5 border-2 border-[#0A0E19] border-t-transparent rounded-full animate-spin"></span>
+                      Saving Changes...
+                    </span>
+                  ) : (
+                    'Save Changes'
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }

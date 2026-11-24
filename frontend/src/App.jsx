@@ -7,6 +7,7 @@ import CreateProblemPage from "./pages/CreateProblemPage.jsx";
 import EditProblemPage from "./pages/EditProblemPage.jsx";
 import SubmissionsPage from "./pages/SubmissionsPage.jsx";
 import ProblemPage from "./pages/ProblemPage.jsx";
+import SolvedProblemsPage from "./pages/SolvedProblemsPage.jsx";
 import AdminRoute from "./components/AdminRoute.jsx";
 import { useDispatch, useSelector } from 'react-redux';
 import { checkAuth } from "./authSlice";
@@ -33,6 +34,14 @@ function App(){
       <Route
         path="/submissions"
         element={isAuthenticated ? <SubmissionsPage /> : <Navigate to="/login" />}
+      />
+      <Route
+        path="/solved"
+        element={isAuthenticated ? <SolvedProblemsPage /> : <Navigate to="/login" />}
+      />
+      <Route
+        path="/progress"
+        element={isAuthenticated ? <SolvedProblemsPage /> : <Navigate to="/login" />}
       />
       <Route
         path="/problem/:id"
