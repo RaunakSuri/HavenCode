@@ -4,6 +4,7 @@ import { fetchUserSubmissions, fetchSolvedProblems } from '../problemSlice';
 import { logoutUser } from '../authSlice';
 import { Link, useNavigate } from 'react-router';
 import ThemeToggle from '../components/ThemeToggle';
+import Footer from '../components/Footer';
 
 function SubmissionsPage() {
   const dispatch = useDispatch();
@@ -11,7 +12,9 @@ function SubmissionsPage() {
 
   // Redux Data
   const { user } = useSelector((state) => state.auth);
-  const { submissions, solvedProblems, loading } = useSelector((state) => state.problems);
+  const { submissions, solvedProblems, loading } = useSelector(
+    (state) => state.problems
+  );
 
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
@@ -34,7 +37,8 @@ function SubmissionsPage() {
   // Derived Statistics
   const stats = useMemo(() => {
     const total = submissions?.length || 0;
-    const accepted = submissions?.filter((s) => s.status === 'accepted')?.length || 0;
+    const accepted =
+      submissions?.filter((s) => s.status === 'accepted')?.length || 0;
     const rate = total > 0 ? Math.round((accepted / total) * 100) : 0;
     return { total, accepted, rate };
   }, [submissions]);
@@ -42,9 +46,11 @@ function SubmissionsPage() {
   // Filtered List
   const filteredSubmissions = useMemo(() => {
     return (submissions || []).filter((sub) => {
-      const matchesStatus = statusFilter === 'all' || sub.status === statusFilter;
+      const matchesStatus =
+        statusFilter === 'all' || sub.status === statusFilter;
       const matchesLang =
-        langFilter === 'all' || sub.language?.toLowerCase() === langFilter.toLowerCase();
+        langFilter === 'all' ||
+        sub.language?.toLowerCase() === langFilter.toLowerCase();
       return matchesStatus && matchesLang;
     });
   }, [submissions, statusFilter, langFilter]);
@@ -94,23 +100,13 @@ function SubmissionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F131E] text-[#DFE2F2] pb-20 font-sans selection:bg-cyan-500/20 selection:text-cyan-300">
+    <div className="min-h-screen bg-[#0F131E] text-[#DFE2F2] flex flex-col font-sans selection:bg-cyan-500/20 selection:text-cyan-300">
       {/* ================= UNIFIED NAVBAR ================= */}
       <header className="sticky top-0 z-40 bg-[#0B0F1A]/85 backdrop-blur-xl border-b border-[#263049] px-6 sm:px-10 h-16 flex items-center justify-between">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3B82F6] to-[#22D3EE] flex items-center justify-center text-[#0A0E19] font-bold text-base shadow-[0_0_16px_rgba(34,211,238,0.3)] group-hover:scale-105 transition-all duration-200">
-                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                  <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
-                </svg>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-xl font-extrabold tracking-tight text-[#DFE2F2] font-display group-hover:text-white transition-colors">
-                  HavenCode
-                </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#5DE6FF] animate-pulse"></span>
-              </div>
+              <img src="/logo.svg" alt="HavenCode" className="h-8 sm:h-9 w-auto group-hover:scale-105 transition-all duration-200" />
             </Link>
 
             {/* Main Nav Links */}
@@ -167,12 +163,16 @@ function SubmissionsPage() {
                 <li className="px-1 py-1 border-b border-[#263049] pb-2.5">
                   <div className="flex flex-col gap-0.5 p-0 hover:bg-transparent">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-[#DFE2F2] text-sm">{user?.firstName}</span>
+                      <span className="font-bold text-[#DFE2F2] text-sm">
+                        {user?.firstName}
+                      </span>
                       <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-[#262A36] text-[#94A3B8]">
                         {user?.role || 'Developer'}
                       </span>
                     </div>
-                    <span className="text-[#64748B] text-[11px] font-normal truncate">{user?.emailId}</span>
+                    <span className="text-[#64748B] text-[11px] font-normal truncate">
+                      {user?.emailId}
+                    </span>
                   </div>
                 </li>
 
@@ -193,7 +193,7 @@ function SubmissionsPage() {
       </header>
 
       {/* ================= PAGE HERO & TITLE ================= */}
-      <main className="max-w-7xl mx-auto px-6 sm:px-10 pt-10 sm:pt-12">
+      <main className="mx-auto w-full max-w-7xl px-6 sm:px-10 pt-10 sm:pt-12 pb-12 sm:pb-16 flex-1">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#262A36] text-[#5DE6FF] border border-[#424754]/40 mb-3">
@@ -204,7 +204,8 @@ function SubmissionsPage() {
               Submission History
             </h1>
             <p className="text-[#94A3B8] text-sm sm:text-base mt-1.5 max-w-xl">
-              Review your past submissions, execution metrics, and code solutions.
+              Review your past submissions, execution metrics, and code
+              solutions.
             </p>
           </div>
         </div>
@@ -224,7 +225,9 @@ function SubmissionsPage() {
             <div className="font-display text-3xl sm:text-4xl font-extrabold text-[#DFE2F2]">
               {stats.total}
             </div>
-            <div className="text-xs text-[#64748B] mt-2">Every submission you&apos;ve made</div>
+            <div className="text-xs text-[#64748B] mt-2">
+              Every submission you&apos;ve made
+            </div>
           </div>
 
           {/* Card 2: Accepted Submissions */}
@@ -273,7 +276,9 @@ function SubmissionsPage() {
           <div className="flex flex-wrap gap-3 items-center">
             {/* Status Filter */}
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-[#94A3B8]">Status:</span>
+              <span className="text-xs font-semibold text-[#94A3B8]">
+                Status:
+              </span>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
@@ -288,7 +293,9 @@ function SubmissionsPage() {
 
             {/* Language Filter */}
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-[#94A3B8]">Language:</span>
+              <span className="text-xs font-semibold text-[#94A3B8]">
+                Language:
+              </span>
               <select
                 value={langFilter}
                 onChange={(e) => setLangFilter(e.target.value)}
@@ -316,7 +323,11 @@ function SubmissionsPage() {
           </div>
 
           <span className="text-xs text-[#64748B] font-medium">
-            Showing <span className="text-[#DFE2F2] font-semibold">{filteredSubmissions.length}</span> of {submissions?.length || 0}
+            Showing{' '}
+            <span className="text-[#DFE2F2] font-semibold">
+              {filteredSubmissions.length}
+            </span>{' '}
+            of {submissions?.length || 0}
           </span>
         </div>
 
@@ -325,7 +336,9 @@ function SubmissionsPage() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-24 gap-3 bg-[#171B27]">
               <div className="w-8 h-8 border-2 border-[#5DE6FF] border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-[#64748B] text-xs font-medium">Loading submission records...</p>
+              <p className="text-[#64748B] text-xs font-medium">
+                Loading submission records...
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -344,7 +357,10 @@ function SubmissionsPage() {
                 <tbody className="divide-y divide-[#263049]">
                   {filteredSubmissions.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="text-center py-16 text-[#64748B] text-sm">
+                      <td
+                        colSpan={7}
+                        className="text-center py-16 text-[#64748B] text-sm"
+                      >
                         No submissions found matching your filters.
                       </td>
                     </tr>
@@ -363,10 +379,14 @@ function SubmissionsPage() {
                               {sub.problemId.title}
                             </Link>
                           ) : (
-                            <span className="text-[#64748B] italic">Archived Problem</span>
+                            <span className="text-[#64748B] italic">
+                              Archived Problem
+                            </span>
                           )}
                         </td>
-                        <td className="px-6 py-4">{getStatusBadge(sub.status)}</td>
+                        <td className="px-6 py-4">
+                          {getStatusBadge(sub.status)}
+                        </td>
                         <td className="px-6 py-4">
                           <span className="px-2.5 py-1 rounded-lg text-xs font-mono font-medium uppercase bg-[#1B1F2B] text-[#94A3B8] border border-[#263049]">
                             {sub.language}
@@ -398,6 +418,7 @@ function SubmissionsPage() {
           )}
         </div>
       </main>
+      <Footer />
 
       {/* Code Viewer Modal */}
       {selectedSubmission && (

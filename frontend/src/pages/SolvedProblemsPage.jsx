@@ -4,13 +4,16 @@ import { fetchAllProblems, fetchSolvedProblems } from '../problemSlice';
 import { logoutUser } from '../authSlice';
 import { Link } from 'react-router';
 import ThemeToggle from '../components/ThemeToggle';
+import Footer from '../components/Footer';
 
 function SolvedProblemsPage() {
   const dispatch = useDispatch();
 
   // Redux Data
   const { user } = useSelector((state) => state.auth);
-  const { problems, solvedProblems, loading } = useSelector((state) => state.problems);
+  const { problems, solvedProblems, loading } = useSelector(
+    (state) => state.problems
+  );
 
   // Search & Difficulty Categorization States
   const [search, setSearch] = useState('');
@@ -37,7 +40,9 @@ function SolvedProblemsPage() {
 
   // Full problem objects for solved problems
   const solvedList = useMemo(() => {
-    return (problems || []).filter((problem) => solvedProblemIds.has(problem._id));
+    return (problems || []).filter((problem) =>
+      solvedProblemIds.has(problem._id)
+    );
   }, [problems, solvedProblemIds]);
 
   // Solved Stats & Categorization
@@ -45,14 +50,26 @@ function SolvedProblemsPage() {
     const total = problems?.length || 0;
     const solved = solvedList.length;
 
-    const easyCatalog = (problems || []).filter((p) => p.difficulty?.toLowerCase() === 'easy');
-    const easySolved = solvedList.filter((p) => p.difficulty?.toLowerCase() === 'easy').length;
+    const easyCatalog = (problems || []).filter(
+      (p) => p.difficulty?.toLowerCase() === 'easy'
+    );
+    const easySolved = solvedList.filter(
+      (p) => p.difficulty?.toLowerCase() === 'easy'
+    ).length;
 
-    const medCatalog = (problems || []).filter((p) => p.difficulty?.toLowerCase() === 'medium');
-    const medSolved = solvedList.filter((p) => p.difficulty?.toLowerCase() === 'medium').length;
+    const medCatalog = (problems || []).filter(
+      (p) => p.difficulty?.toLowerCase() === 'medium'
+    );
+    const medSolved = solvedList.filter(
+      (p) => p.difficulty?.toLowerCase() === 'medium'
+    ).length;
 
-    const hardCatalog = (problems || []).filter((p) => p.difficulty?.toLowerCase() === 'hard');
-    const hardSolved = solvedList.filter((p) => p.difficulty?.toLowerCase() === 'hard').length;
+    const hardCatalog = (problems || []).filter(
+      (p) => p.difficulty?.toLowerCase() === 'hard'
+    );
+    const hardSolved = solvedList.filter(
+      (p) => p.difficulty?.toLowerCase() === 'hard'
+    ).length;
 
     return {
       total,
@@ -77,7 +94,8 @@ function SolvedProblemsPage() {
 
       const matchesTag =
         selectedTag === 'all' ||
-        (problem.tags && problem.tags.toLowerCase() === selectedTag.toLowerCase());
+        (problem.tags &&
+          problem.tags.toLowerCase() === selectedTag.toLowerCase());
 
       return matchesSearch && matchesDifficulty && matchesTag;
     });
@@ -127,23 +145,13 @@ function SolvedProblemsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0F131E] text-[#DFE2F2] pb-20 font-sans selection:bg-cyan-500/20 selection:text-cyan-300">
+    <div className="min-h-screen bg-[#0F131E] text-[#DFE2F2] flex flex-col font-sans selection:bg-cyan-500/20 selection:text-cyan-300">
       {/* ================= MODERN DARK NAVBAR ================= */}
       <header className="sticky top-0 z-40 bg-[#0B0F1A]/85 backdrop-blur-xl border-b border-[#263049] px-6 sm:px-10 h-16 flex items-center justify-between">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3B82F6] to-[#22D3EE] flex items-center justify-center text-[#0A0E19] font-bold text-base shadow-[0_0_16px_rgba(34,211,238,0.3)] group-hover:scale-105 transition-all">
-                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                  <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
-                </svg>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-xl font-extrabold tracking-tight text-[#DFE2F2] font-display group-hover:text-white transition-colors">
-                  HavenCode
-                </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-              </div>
+              <img src="/logo.svg" alt="HavenCode" className="h-8 sm:h-9 w-auto group-hover:scale-105 transition-all duration-200" />
             </Link>
 
             {/* Main Nav Links */}
@@ -200,12 +208,16 @@ function SolvedProblemsPage() {
                 <li className="px-1 py-1 border-b border-[#263049] pb-2.5">
                   <div className="flex flex-col gap-0.5 p-0 hover:bg-transparent">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-[#DFE2F2] text-sm">{user?.firstName}</span>
+                      <span className="font-bold text-[#DFE2F2] text-sm">
+                        {user?.firstName}
+                      </span>
                       <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-[#262A36] text-[#94A3B8]">
                         {user?.role || 'Developer'}
                       </span>
                     </div>
-                    <span className="text-[#64748B] text-[11px] font-normal truncate">{user?.emailId}</span>
+                    <span className="text-[#64748B] text-[11px] font-normal truncate">
+                      {user?.emailId}
+                    </span>
                   </div>
                 </li>
 
@@ -213,7 +225,9 @@ function SolvedProblemsPage() {
                   <div className="flex flex-col gap-1.5 p-0 hover:bg-transparent">
                     <div className="flex justify-between items-center text-[11px] text-[#94A3B8]">
                       <span>Solved Progress</span>
-                      <span className="font-bold text-[#DFE2F2]">{stats.solved} / {stats.total}</span>
+                      <span className="font-bold text-[#DFE2F2]">
+                        {stats.solved} / {stats.total}
+                      </span>
                     </div>
                     <div className="w-full h-1.5 bg-[#262A36] rounded-full overflow-hidden">
                       <div
@@ -240,7 +254,7 @@ function SolvedProblemsPage() {
       </header>
 
       {/* ================= PAGE HERO & TITLE ================= */}
-      <main className="max-w-7xl mx-auto px-6 sm:px-10 pt-10 sm:pt-12">
+      <main className="mx-auto w-full max-w-7xl px-6 sm:px-10 pt-10 sm:pt-12 pb-12 sm:pb-16 flex-1">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/50 text-emerald-400 border border-emerald-500/30 mb-3">
@@ -251,7 +265,8 @@ function SolvedProblemsPage() {
               Solved Problems
             </h1>
             <p className="text-[#94A3B8] text-sm sm:text-base mt-1.5 max-w-xl">
-              Track your solved algorithm challenges categorized across Easy, Medium, and Hard difficulty tiers.
+              Track your solved algorithm challenges categorized across Easy,
+              Medium, and Hard difficulty tiers.
             </p>
           </div>
 
@@ -279,7 +294,9 @@ function SolvedProblemsPage() {
               <span className="font-display text-3xl sm:text-4xl font-extrabold text-[#DFE2F2]">
                 {stats.solved}
               </span>
-              <span className="text-xs text-[#64748B] font-medium">/ {stats.total} total</span>
+              <span className="text-xs text-[#64748B] font-medium">
+                / {stats.total} total
+              </span>
             </div>
             {/* Progress bar */}
             <div className="w-full h-1.5 bg-[#262A36] rounded-full mt-3 overflow-hidden">
@@ -301,14 +318,19 @@ function SolvedProblemsPage() {
                 <span>Easy</span>
               </div>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950/60 text-emerald-400 border border-emerald-500/30">
-                {stats.easy.total > 0 ? Math.round((stats.easy.solved / stats.easy.total) * 100) : 0}%
+                {stats.easy.total > 0
+                  ? Math.round((stats.easy.solved / stats.easy.total) * 100)
+                  : 0}
+                %
               </span>
             </div>
             <div className="flex items-baseline gap-2">
               <span className="font-display text-3xl sm:text-4xl font-extrabold text-emerald-400">
                 {stats.easy.solved}
               </span>
-              <span className="text-xs text-[#64748B] font-medium">/ {stats.easy.total} available</span>
+              <span className="text-xs text-[#64748B] font-medium">
+                / {stats.easy.total} available
+              </span>
             </div>
             <div className="w-full h-1.5 bg-[#262A36] rounded-full mt-3 overflow-hidden">
               <div
@@ -331,14 +353,19 @@ function SolvedProblemsPage() {
                 <span>Medium</span>
               </div>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-950/60 text-amber-400 border border-amber-500/30">
-                {stats.med.total > 0 ? Math.round((stats.med.solved / stats.med.total) * 100) : 0}%
+                {stats.med.total > 0
+                  ? Math.round((stats.med.solved / stats.med.total) * 100)
+                  : 0}
+                %
               </span>
             </div>
             <div className="flex items-baseline gap-2">
               <span className="font-display text-3xl sm:text-4xl font-extrabold text-amber-400">
                 {stats.med.solved}
               </span>
-              <span className="text-xs text-[#64748B] font-medium">/ {stats.med.total} available</span>
+              <span className="text-xs text-[#64748B] font-medium">
+                / {stats.med.total} available
+              </span>
             </div>
             <div className="w-full h-1.5 bg-[#262A36] rounded-full mt-3 overflow-hidden">
               <div
@@ -361,14 +388,19 @@ function SolvedProblemsPage() {
                 <span>Hard</span>
               </div>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-950/60 text-rose-400 border border-rose-500/30">
-                {stats.hard.total > 0 ? Math.round((stats.hard.solved / stats.hard.total) * 100) : 0}%
+                {stats.hard.total > 0
+                  ? Math.round((stats.hard.solved / stats.hard.total) * 100)
+                  : 0}
+                %
               </span>
             </div>
             <div className="flex items-baseline gap-2">
               <span className="font-display text-3xl sm:text-4xl font-extrabold text-rose-400">
                 {stats.hard.solved}
               </span>
-              <span className="text-xs text-[#64748B] font-medium">/ {stats.hard.total} available</span>
+              <span className="text-xs text-[#64748B] font-medium">
+                / {stats.hard.total} available
+              </span>
             </div>
             <div className="w-full h-1.5 bg-[#262A36] rounded-full mt-3 overflow-hidden">
               <div
@@ -393,15 +425,26 @@ function SolvedProblemsPage() {
                 Solved Catalog
               </h2>
               <p className="text-xs text-[#94A3B8] mt-0.5">
-                Showing {filteredSolvedProblems.length} of {stats.solved} solved problems
+                Showing {filteredSolvedProblems.length} of {stats.solved} solved
+                problems
               </p>
             </div>
 
             {/* Search Input */}
             <div className="relative w-full md:w-80">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-[#64748B]">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
               </span>
               <input
@@ -460,7 +503,9 @@ function SolvedProblemsPage() {
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20 gap-3 bg-[#171B27]">
                 <span className="w-7 h-7 border-2 border-[#5DE6FF] border-t-transparent rounded-full animate-spin"></span>
-                <span className="text-xs text-[#94A3B8] font-medium">Loading solved problems...</span>
+                <span className="text-xs text-[#94A3B8] font-medium">
+                  Loading solved problems...
+                </span>
               </div>
             ) : filteredSolvedProblems.length === 0 ? (
               <div className="text-center py-16 bg-[#171B27]">
@@ -468,7 +513,9 @@ function SolvedProblemsPage() {
                   ✓
                 </div>
                 <h3 className="font-display font-bold text-[#DFE2F2] text-base">
-                  {stats.solved === 0 ? 'No problems solved yet' : 'No matching solved problems'}
+                  {stats.solved === 0
+                    ? 'No problems solved yet'
+                    : 'No matching solved problems'}
                 </h3>
                 <p className="text-xs text-[#64748B] mt-1 max-w-sm mx-auto">
                   {stats.solved === 0
@@ -499,7 +546,10 @@ function SolvedProblemsPage() {
                   </thead>
                   <tbody className="divide-y divide-[#263049] bg-[#171B27]">
                     {filteredSolvedProblems.map((problem) => (
-                      <tr key={problem._id} className="hover:bg-[#1B1F2B] transition-colors group">
+                      <tr
+                        key={problem._id}
+                        className="hover:bg-[#1B1F2B] transition-colors group"
+                      >
                         <td className="py-4 px-6">
                           <span className="w-6 h-6 rounded-full bg-emerald-950/60 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-xs font-bold shadow-xs">
                             ✓
@@ -513,7 +563,9 @@ function SolvedProblemsPage() {
                             <span>{problem.title}</span>
                           </Link>
                         </td>
-                        <td className="py-4 px-6">{getDifficultyPill(problem.difficulty)}</td>
+                        <td className="py-4 px-6">
+                          {getDifficultyPill(problem.difficulty)}
+                        </td>
                         <td className="py-4 px-6">
                           {problem.tags && (
                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium bg-[#1B1F2B] text-[#94A3B8] capitalize border border-[#263049]">
@@ -539,6 +591,7 @@ function SolvedProblemsPage() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

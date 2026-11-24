@@ -268,12 +268,7 @@ function ProblemPage() {
         {/* Left: Brand & Breadcrumbs */}
         <div className="flex items-center gap-3">
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#3B82F6] to-[#22D3EE] flex items-center justify-center shadow-sm text-[#0A0E19] font-black text-sm group-hover:scale-105 transition-transform">
-              H
-            </div>
-            <span className="font-display font-bold text-[#DFE2F2] text-base tracking-tight hidden sm:inline">
-              HavenCode
-            </span>
+            <img src="/logo.svg" alt="HavenCode" className="h-7 sm:h-8 w-auto group-hover:scale-105 transition-transform" />
           </Link>
           <span className="text-[#64748B] font-light">/</span>
           <div className="flex items-center gap-2 max-w-xs sm:max-w-md truncate">

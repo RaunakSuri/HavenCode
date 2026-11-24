@@ -61,17 +61,7 @@ function AdminPanel() {
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3B82F6] to-[#22D3EE] flex items-center justify-center text-[#0A0E19] font-bold text-base shadow-[0_0_16px_rgba(34,211,238,0.3)] group-hover:scale-105 transition-all duration-200">
-                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                  <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
-                </svg>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-xl font-extrabold tracking-tight text-[#DFE2F2] font-display group-hover:text-white transition-colors">
-                  HavenCode
-                </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#5DE6FF] animate-pulse"></span>
-              </div>
+              <img src="/logo.svg" alt="HavenCode" className="h-8 sm:h-9 w-auto group-hover:scale-105 transition-all duration-200" />
             </Link>
             <span className="text-[#64748B] font-light">/</span>
             <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-950/40 text-amber-400 border border-amber-500/30">
@@ -98,7 +88,7 @@ function AdminPanel() {
       </header>
 
       {/* ================= PAGE HERO & TITLE ================= */}
-      <main className="max-w-7xl mx-auto px-6 sm:px-10 pt-10 sm:pt-12">
+      <main className="mx-auto w-full max-w-7xl px-6 sm:px-10 pt-10 sm:pt-12">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#262A36] text-[#5DE6FF] border border-[#424754]/40 mb-3">
@@ -125,7 +115,9 @@ function AdminPanel() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-24 gap-3">
               <div className="w-8 h-8 border-2 border-[#5DE6FF] border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-[#64748B] text-xs font-medium">Loading problems...</p>
+              <p className="text-[#64748B] text-xs font-medium">
+                Loading problems...
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -142,8 +134,12 @@ function AdminPanel() {
                 <tbody className="divide-y divide-[#263049]">
                   {!problems || problems.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="text-center py-16 text-[#64748B] text-sm">
-                        No problems found in the database. Click &quot;+ Add Problem&quot; to publish one!
+                      <td
+                        colSpan={5}
+                        className="text-center py-16 text-[#64748B] text-sm"
+                      >
+                        No problems found in the database. Click &quot;+ Add
+                        Problem&quot; to publish one!
                       </td>
                     </tr>
                   ) : (
@@ -158,7 +154,9 @@ function AdminPanel() {
                         <td className="px-6 py-4 font-semibold text-[#DFE2F2]">
                           {problem.title}
                         </td>
-                        <td className="px-6 py-4">{getDifficultyPill(problem.difficulty)}</td>
+                        <td className="px-6 py-4">
+                          {getDifficultyPill(problem.difficulty)}
+                        </td>
                         <td className="px-6 py-4">
                           {problem.tags && (
                             <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#1B1F2B] text-[#94A3B8] border border-[#263049] capitalize">
@@ -201,7 +199,9 @@ function AdminPanel() {
               Confirm Problem Deletion
             </h3>
             <p className="text-sm text-[#94A3B8] mb-6">
-              Are you sure you want to delete this problem? This action permanently removes the problem, its test cases, and its starter code.
+              Are you sure you want to delete this problem? This action
+              permanently removes the problem, its test cases, and its starter
+              code.
             </p>
             <div className="flex justify-end gap-3">
               <button

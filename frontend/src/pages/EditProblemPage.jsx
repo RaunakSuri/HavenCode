@@ -31,18 +31,28 @@ function EditProblemPage() {
     async function fetchProblemDetails() {
       try {
         setLoadingProblem(true);
-        const res = await axiosClient.get(`/problem/getProblem/${id}`);
+        const res = await axiosClient.get(`/problem/getProblemAdmin/${id}`);
         const data = res.data;
         setTitle(data.title || '');
         setDescription(data.description || '');
         setDifficulty(data.difficulty || 'easy');
         setTags(data.tags || 'array');
-        setVisibleTestCases(data.visibleTestCases || [{ input: '', output: '', explanation: '' }]);
+        setVisibleTestCases(
+          data.visibleTestCases || [{ input: '', output: '', explanation: '' }]
+        );
         setHiddenTestCases(data.hiddenTestCases || [{ input: '', output: '' }]);
-        setStartCode(data.startCode || [{ language: 'javascript', initialCode: '' }]);
-        setReferenceSolution(data.referenceSolution || [{ language: 'javascript', completeCode: '' }]);
+        setStartCode(
+          data.startCode || [{ language: 'javascript', initialCode: '' }]
+        );
+        setReferenceSolution(
+          data.referenceSolution || [
+            { language: 'javascript', completeCode: '' },
+          ]
+        );
       } catch (err) {
-        setError(err.response?.data || err.message || 'Failed to load problem.');
+        setError(
+          err.response?.data || err.message || 'Failed to load problem.'
+        );
       } finally {
         setLoadingProblem(false);
       }
@@ -52,7 +62,10 @@ function EditProblemPage() {
 
   // Handlers for Visible Test Cases
   const addVisibleTestCase = () => {
-    setVisibleTestCases([...visibleTestCases, { input: '', output: '', explanation: '' }]);
+    setVisibleTestCases([
+      ...visibleTestCases,
+      { input: '', output: '', explanation: '' },
+    ]);
   };
   const removeVisibleTestCase = (index) => {
     setVisibleTestCases(visibleTestCases.filter((_, i) => i !== index));
@@ -91,7 +104,10 @@ function EditProblemPage() {
 
   // Handlers for Reference Solution
   const addReferenceSolution = () => {
-    setReferenceSolution([...referenceSolution, { language: 'python', completeCode: '' }]);
+    setReferenceSolution([
+      ...referenceSolution,
+      { language: 'python', completeCode: '' },
+    ]);
   };
   const removeReferenceSolution = (index) => {
     setReferenceSolution(referenceSolution.filter((_, i) => i !== index));
@@ -138,7 +154,9 @@ function EditProblemPage() {
         <div className="w-12 h-12 rounded-2xl bg-[#262A36] flex items-center justify-center mb-4">
           <div className="w-6 h-6 border-2 border-[#5DE6FF] border-t-transparent rounded-full animate-spin"></div>
         </div>
-        <p className="font-display font-medium text-[#94A3B8] text-sm">Loading problem...</p>
+        <p className="font-display font-medium text-[#94A3B8] text-sm">
+          Loading problem...
+        </p>
       </div>
     );
   }
@@ -150,17 +168,7 @@ function EditProblemPage() {
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3B82F6] to-[#22D3EE] flex items-center justify-center text-[#0A0E19] font-bold text-base shadow-[0_0_16px_rgba(34,211,238,0.3)] group-hover:scale-105 transition-all duration-200">
-                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                  <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
-                </svg>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-xl font-extrabold tracking-tight text-[#DFE2F2] font-display group-hover:text-white transition-colors">
-                  HavenCode
-                </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#5DE6FF] animate-pulse"></span>
-              </div>
+              <img src="/logo.svg" alt="HavenCode" className="h-8 sm:h-9 w-auto group-hover:scale-105 transition-all duration-200" />
             </Link>
             <span className="text-[#64748B] font-light">/</span>
             <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#1B1F2B] text-[#5DE6FF] border border-[#263049]">
@@ -180,7 +188,7 @@ function EditProblemPage() {
       </header>
 
       {/* ================= PAGE HERO & TITLE ================= */}
-      <main className="max-w-7xl mx-auto px-6 sm:px-10 pt-10 sm:pt-12">
+      <main className="mx-auto w-full max-w-7xl px-6 sm:px-10 pt-10 sm:pt-12">
         <div className="mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#262A36] text-[#5DE6FF] border border-[#424754]/40 mb-3">
             <span className="w-2 h-2 rounded-full bg-[#5DE6FF] animate-pulse"></span>
@@ -199,14 +207,18 @@ function EditProblemPage() {
             {error && (
               <div className="p-4 rounded-2xl bg-rose-950/40 border border-rose-500/30 text-rose-400 text-sm mb-6 flex items-center gap-3">
                 <span className="font-bold text-base">!</span>
-                <span>{typeof error === 'string' ? error : JSON.stringify(error)}</span>
+                <span>
+                  {typeof error === 'string' ? error : JSON.stringify(error)}
+                </span>
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Title */}
               <div>
-                <label className="block text-xs font-semibold text-[#DFE2F2] mb-1.5">Problem Title</label>
+                <label className="block text-xs font-semibold text-[#DFE2F2] mb-1.5">
+                  Problem Title
+                </label>
                 <input
                   type="text"
                   value={title}
@@ -219,7 +231,9 @@ function EditProblemPage() {
               {/* Difficulty & Tag */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#DFE2F2] mb-1.5">Difficulty</label>
+                  <label className="block text-xs font-semibold text-[#DFE2F2] mb-1.5">
+                    Difficulty
+                  </label>
                   <select
                     value={difficulty}
                     onChange={(e) => setDifficulty(e.target.value)}
@@ -232,7 +246,9 @@ function EditProblemPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#DFE2F2] mb-1.5">Category / Tag</label>
+                  <label className="block text-xs font-semibold text-[#DFE2F2] mb-1.5">
+                    Category / Tag
+                  </label>
                   <select
                     value={tags}
                     onChange={(e) => setTags(e.target.value)}
@@ -251,7 +267,9 @@ function EditProblemPage() {
 
               {/* Description */}
               <div>
-                <label className="block text-xs font-semibold text-[#DFE2F2] mb-1.5">Problem Description</label>
+                <label className="block text-xs font-semibold text-[#DFE2F2] mb-1.5">
+                  Problem Description
+                </label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -264,7 +282,9 @@ function EditProblemPage() {
               {/* ================= VISIBLE TEST CASES ================= */}
               <div className="border border-[#263049] rounded-2xl p-5 bg-[#101524]">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-bold text-base text-[#DFE2F2]">Visible Test Cases</h3>
+                  <h3 className="font-bold text-base text-[#DFE2F2]">
+                    Visible Test Cases
+                  </h3>
                   <button
                     type="button"
                     onClick={addVisibleTestCase}
@@ -276,7 +296,10 @@ function EditProblemPage() {
 
                 <div className="space-y-4">
                   {visibleTestCases.map((tc, index) => (
-                    <div key={index} className="bg-[#171B27] p-4 rounded-xl border border-[#263049] space-y-3 relative">
+                    <div
+                      key={index}
+                      className="bg-[#171B27] p-4 rounded-xl border border-[#263049] space-y-3 relative"
+                    >
                       {visibleTestCases.length > 1 && (
                         <button
                           type="button"
@@ -288,32 +311,56 @@ function EditProblemPage() {
                       )}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-xs font-medium text-[#94A3B8] mb-1">Input</label>
+                          <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                            Input
+                          </label>
                           <input
                             type="text"
                             value={tc.input}
-                            onChange={(e) => updateVisibleTestCase(index, 'input', e.target.value)}
+                            onChange={(e) =>
+                              updateVisibleTestCase(
+                                index,
+                                'input',
+                                e.target.value
+                              )
+                            }
                             required
                             className="w-full px-3 py-2 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] font-mono text-xs focus:outline-none focus:border-[#3B82F6]"
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-[#94A3B8] mb-1">Expected Output</label>
+                          <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                            Expected Output
+                          </label>
                           <input
                             type="text"
                             value={tc.output}
-                            onChange={(e) => updateVisibleTestCase(index, 'output', e.target.value)}
+                            onChange={(e) =>
+                              updateVisibleTestCase(
+                                index,
+                                'output',
+                                e.target.value
+                              )
+                            }
                             required
                             className="w-full px-3 py-2 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] font-mono text-xs focus:outline-none focus:border-[#3B82F6]"
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-[#94A3B8] mb-1">Explanation</label>
+                        <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                          Explanation
+                        </label>
                         <input
                           type="text"
                           value={tc.explanation}
-                          onChange={(e) => updateVisibleTestCase(index, 'explanation', e.target.value)}
+                          onChange={(e) =>
+                            updateVisibleTestCase(
+                              index,
+                              'explanation',
+                              e.target.value
+                            )
+                          }
                           required
                           className="w-full px-3 py-2 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] text-xs focus:outline-none focus:border-[#3B82F6]"
                         />
@@ -326,7 +373,9 @@ function EditProblemPage() {
               {/* ================= HIDDEN TEST CASES ================= */}
               <div className="border border-[#263049] rounded-2xl p-5 bg-[#101524]">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-bold text-base text-[#DFE2F2]">Hidden Test Cases</h3>
+                  <h3 className="font-bold text-base text-[#DFE2F2]">
+                    Hidden Test Cases
+                  </h3>
                   <button
                     type="button"
                     onClick={addHiddenTestCase}
@@ -338,7 +387,10 @@ function EditProblemPage() {
 
                 <div className="space-y-4">
                   {hiddenTestCases.map((tc, index) => (
-                    <div key={index} className="bg-[#171B27] p-4 rounded-xl border border-[#263049] relative">
+                    <div
+                      key={index}
+                      className="bg-[#171B27] p-4 rounded-xl border border-[#263049] relative"
+                    >
                       {hiddenTestCases.length > 1 && (
                         <button
                           type="button"
@@ -350,21 +402,37 @@ function EditProblemPage() {
                       )}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-xs font-medium text-[#94A3B8] mb-1">Input</label>
+                          <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                            Input
+                          </label>
                           <input
                             type="text"
                             value={tc.input}
-                            onChange={(e) => updateHiddenTestCase(index, 'input', e.target.value)}
+                            onChange={(e) =>
+                              updateHiddenTestCase(
+                                index,
+                                'input',
+                                e.target.value
+                              )
+                            }
                             required
                             className="w-full px-3 py-2 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] font-mono text-xs focus:outline-none focus:border-[#3B82F6]"
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-[#94A3B8] mb-1">Expected Output</label>
+                          <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                            Expected Output
+                          </label>
                           <input
                             type="text"
                             value={tc.output}
-                            onChange={(e) => updateHiddenTestCase(index, 'output', e.target.value)}
+                            onChange={(e) =>
+                              updateHiddenTestCase(
+                                index,
+                                'output',
+                                e.target.value
+                              )
+                            }
                             required
                             className="w-full px-3 py-2 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] font-mono text-xs focus:outline-none focus:border-[#3B82F6]"
                           />
@@ -378,7 +446,9 @@ function EditProblemPage() {
               {/* ================= START CODE ================= */}
               <div className="border border-[#263049] rounded-2xl p-5 bg-[#101524]">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-bold text-base text-[#DFE2F2]">Starter Code Templates</h3>
+                  <h3 className="font-bold text-base text-[#DFE2F2]">
+                    Starter Code Templates
+                  </h3>
                   <button
                     type="button"
                     onClick={addStartCode}
@@ -390,7 +460,10 @@ function EditProblemPage() {
 
                 <div className="space-y-4">
                   {startCode.map((sc, index) => (
-                    <div key={index} className="bg-[#171B27] p-4 rounded-xl border border-[#263049] space-y-3 relative">
+                    <div
+                      key={index}
+                      className="bg-[#171B27] p-4 rounded-xl border border-[#263049] space-y-3 relative"
+                    >
                       {startCode.length > 1 && (
                         <button
                           type="button"
@@ -401,22 +474,36 @@ function EditProblemPage() {
                         </button>
                       )}
                       <div className="w-48">
-                        <label className="block text-xs font-medium text-[#94A3B8] mb-1">Language</label>
+                        <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                          Language
+                        </label>
                         <select
                           value={sc.language}
-                          onChange={(e) => updateStartCode(index, 'language', e.target.value)}
+                          onChange={(e) =>
+                            updateStartCode(index, 'language', e.target.value)
+                          }
                           className="w-full px-3 py-1.5 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] text-xs capitalize focus:outline-none focus:border-[#3B82F6]"
                         >
                           {DEFAULT_LANGUAGES.map((lang) => (
-                            <option key={lang} value={lang}>{lang}</option>
+                            <option key={lang} value={lang}>
+                              {lang}
+                            </option>
                           ))}
                         </select>
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-[#94A3B8] mb-1">Initial Code</label>
+                        <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                          Initial Code
+                        </label>
                         <textarea
                           value={sc.initialCode}
-                          onChange={(e) => updateStartCode(index, 'initialCode', e.target.value)}
+                          onChange={(e) =>
+                            updateStartCode(
+                              index,
+                              'initialCode',
+                              e.target.value
+                            )
+                          }
                           required
                           rows={3}
                           className="w-full px-3 py-2 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] font-mono text-xs focus:outline-none focus:border-[#3B82F6]"
@@ -430,7 +517,9 @@ function EditProblemPage() {
               {/* ================= REFERENCE SOLUTIONS ================= */}
               <div className="border border-[#263049] rounded-2xl p-5 bg-[#101524]">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-bold text-base text-[#DFE2F2]">Reference Solutions</h3>
+                  <h3 className="font-bold text-base text-[#DFE2F2]">
+                    Reference Solutions
+                  </h3>
                   <button
                     type="button"
                     onClick={addReferenceSolution}
@@ -442,7 +531,10 @@ function EditProblemPage() {
 
                 <div className="space-y-4">
                   {referenceSolution.map((rs, index) => (
-                    <div key={index} className="bg-[#171B27] p-4 rounded-xl border border-[#263049] space-y-3 relative">
+                    <div
+                      key={index}
+                      className="bg-[#171B27] p-4 rounded-xl border border-[#263049] space-y-3 relative"
+                    >
                       {referenceSolution.length > 1 && (
                         <button
                           type="button"
@@ -453,22 +545,40 @@ function EditProblemPage() {
                         </button>
                       )}
                       <div className="w-48">
-                        <label className="block text-xs font-medium text-[#94A3B8] mb-1">Language</label>
+                        <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                          Language
+                        </label>
                         <select
                           value={rs.language}
-                          onChange={(e) => updateReferenceSolution(index, 'language', e.target.value)}
+                          onChange={(e) =>
+                            updateReferenceSolution(
+                              index,
+                              'language',
+                              e.target.value
+                            )
+                          }
                           className="w-full px-3 py-1.5 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] text-xs capitalize focus:outline-none focus:border-[#3B82F6]"
                         >
                           {DEFAULT_LANGUAGES.map((lang) => (
-                            <option key={lang} value={lang}>{lang}</option>
+                            <option key={lang} value={lang}>
+                              {lang}
+                            </option>
                           ))}
                         </select>
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-[#94A3B8] mb-1">Complete Working Code</label>
+                        <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                          Complete Working Code
+                        </label>
                         <textarea
                           value={rs.completeCode}
-                          onChange={(e) => updateReferenceSolution(index, 'completeCode', e.target.value)}
+                          onChange={(e) =>
+                            updateReferenceSolution(
+                              index,
+                              'completeCode',
+                              e.target.value
+                            )
+                          }
                           required
                           rows={4}
                           className="w-full px-3 py-2 rounded-lg bg-[#0A0E19] border border-[#263049] text-[#DFE2F2] font-mono text-xs focus:outline-none focus:border-[#3B82F6]"

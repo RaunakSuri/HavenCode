@@ -44,15 +44,8 @@ function SignupPage() {
 
         {/* Top: Brand Logo */}
         <div className="relative z-10">
-          <Link to="/" className="inline-flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#3B82F6] to-[#22D3EE] flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.3)] font-black text-[#0A0E19] text-base">
-              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
-              </svg>
-            </div>
-            <span className="font-display font-bold text-2xl tracking-tight text-[#DFE2F2]">
-              HavenCode
-            </span>
+          <Link to="/" className="inline-flex items-center gap-2.5 group">
+            <img src="/logo.svg" alt="HavenCode" className="h-9 sm:h-10 w-auto group-hover:scale-105 transition-all duration-200" />
           </Link>
         </div>
 
@@ -93,11 +86,8 @@ function SignupPage() {
         <div className="w-full max-w-md">
           {/* Mobile Brand Header */}
           <div className="lg:hidden flex justify-center mb-8">
-            <Link to="/" className="inline-flex items-center gap-2">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3B82F6] to-[#22D3EE] flex items-center justify-center shadow-[0_0_16px_rgba(34,211,238,0.3)] text-[#0A0E19] font-bold text-lg">
-                H
-              </div>
-              <span className="font-display font-bold text-xl text-[#DFE2F2]">HavenCode</span>
+            <Link to="/" className="inline-flex items-center gap-2 group">
+              <img src="/logo.svg" alt="HavenCode" className="h-8 w-auto group-hover:scale-105 transition-all duration-200" />
             </Link>
           </div>
 

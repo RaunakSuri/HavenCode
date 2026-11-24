@@ -10,7 +10,9 @@ function ProgressPage() {
   const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.auth);
-  const { problems, solvedProblems, loading } = useSelector((state) => state.problems);
+  const { problems, solvedProblems, loading } = useSelector(
+    (state) => state.problems
+  );
 
   useEffect(() => {
     dispatch(fetchAllProblems());
@@ -32,7 +34,9 @@ function ProgressPage() {
     const solved = catalog.filter((p) => solvedIds.has(p._id)).length;
 
     const byDifficulty = (level) => {
-      const inLevel = catalog.filter((p) => p.difficulty?.toLowerCase() === level);
+      const inLevel = catalog.filter(
+        (p) => p.difficulty?.toLowerCase() === level
+      );
       return {
         total: inLevel.length,
         solved: inLevel.filter((p) => solvedIds.has(p._id)).length,
@@ -72,7 +76,8 @@ function ProgressPage() {
       value: `${stats.percent}%`,
       hint: 'Of all problems',
       valueClass: 'text-emerald-400',
-      iconClass: 'bg-emerald-950/40 text-emerald-400 border border-emerald-500/30',
+      iconClass:
+        'bg-emerald-950/40 text-emerald-400 border border-emerald-500/30',
       icon: '%',
     },
     {
@@ -116,17 +121,7 @@ function ProgressPage() {
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3B82F6] to-[#22D3EE] flex items-center justify-center text-[#0A0E19] font-bold text-base shadow-[0_0_16px_rgba(34,211,238,0.3)] group-hover:scale-105 transition-all duration-200">
-                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                  <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
-                </svg>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-xl font-extrabold tracking-tight text-[#DFE2F2] font-display group-hover:text-white transition-colors">
-                  HavenCode
-                </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#5DE6FF] animate-pulse"></span>
-              </div>
+              <img src="/logo.svg" alt="HavenCode" className="h-8 sm:h-9 w-auto group-hover:scale-105 transition-all duration-200" />
             </Link>
 
             {/* Main Nav Links */}
@@ -186,12 +181,16 @@ function ProgressPage() {
                 <li className="px-1 py-1 border-b border-[#263049] pb-2.5">
                   <div className="flex flex-col gap-0.5 p-0 hover:bg-transparent">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-[#DFE2F2] text-sm">{user?.firstName}</span>
+                      <span className="font-bold text-[#DFE2F2] text-sm">
+                        {user?.firstName}
+                      </span>
                       <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-[#262A36] text-[#94A3B8]">
                         {user?.role || 'Developer'}
                       </span>
                     </div>
-                    <span className="text-[#64748B] text-[11px] font-normal truncate">{user?.emailId}</span>
+                    <span className="text-[#64748B] text-[11px] font-normal truncate">
+                      {user?.emailId}
+                    </span>
                   </div>
                 </li>
 
@@ -212,7 +211,7 @@ function ProgressPage() {
       </header>
 
       {/* ================= PAGE HERO & TITLE ================= */}
-      <main className="max-w-7xl mx-auto px-6 sm:px-10 pt-10 sm:pt-12">
+      <main className="mx-auto w-full max-w-7xl px-6 sm:px-10 pt-10 sm:pt-12">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#262A36] text-[#5DE6FF] border border-[#424754]/40 mb-3">
@@ -231,7 +230,9 @@ function ProgressPage() {
         {loading ? (
           <div className="bg-[#171B27] rounded-3xl border border-[#263049] shadow-soft flex flex-col items-center justify-center py-24 gap-3">
             <div className="w-8 h-8 border-2 border-[#5DE6FF] border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-[#64748B] text-xs font-medium">Loading your progress...</p>
+            <p className="text-[#64748B] text-xs font-medium">
+              Loading your progress...
+            </p>
           </div>
         ) : (
           <>
@@ -252,7 +253,9 @@ function ProgressPage() {
                       {card.icon}
                     </div>
                   </div>
-                  <div className={`font-display text-3xl sm:text-4xl font-extrabold ${card.valueClass}`}>
+                  <div
+                    className={`font-display text-3xl sm:text-4xl font-extrabold ${card.valueClass}`}
+                  >
                     {card.value}
                   </div>
                   <div className="text-xs text-[#64748B] mt-2">{card.hint}</div>
@@ -279,7 +282,9 @@ function ProgressPage() {
               <div className="space-y-5">
                 {difficultyRows.map((row) => {
                   const percent =
-                    row.total > 0 ? Math.round((row.solved / row.total) * 100) : 0;
+                    row.total > 0
+                      ? Math.round((row.solved / row.total) * 100)
+                      : 0;
 
                   return (
                     <div key={row.label}>

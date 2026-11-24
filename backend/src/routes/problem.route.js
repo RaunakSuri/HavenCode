@@ -6,6 +6,7 @@ import {
   updateProblem,
   deleteProblem,
   getProblem,
+  getProblemAdmin,
   getAllProblems,
   getSolvedProblems,
   submittedSolutions,
@@ -17,6 +18,7 @@ const problemRouter = express.Router();
 problemRouter.post("/createProblem", validateAdmin, createProblem);
 problemRouter.patch("/update/:id", validateAdmin, updateProblem);
 problemRouter.delete("/delete/:id", validateAdmin, deleteProblem);
+problemRouter.get("/getProblemAdmin/:id", validateAdmin, getProblemAdmin);
 
 // // These routes can be accessed by any user
 problemRouter.get("/getProblem/:id", validateUser, getProblem);

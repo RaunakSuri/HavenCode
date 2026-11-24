@@ -4,6 +4,8 @@ import { fetchAllProblems, fetchSolvedProblems } from '../problemSlice';
 import { logoutUser } from '../authSlice';
 import { Link, useSearchParams } from 'react-router';
 import ThemeToggle from '../components/ThemeToggle';
+import Footer from '../components/Footer';
+import CodeSphere from '../components/CodeSphere';
 
 function HomePage() {
   const dispatch = useDispatch();
@@ -11,7 +13,9 @@ function HomePage() {
 
   // Real Data from Redux & DB
   const { user } = useSelector((state) => state.auth);
-  const { problems, solvedProblems, loading } = useSelector((state) => state.problems);
+  const { problems, solvedProblems, loading } = useSelector(
+    (state) => state.problems
+  );
 
   // Filter & Search states
   const [search, setSearch] = useState('');
@@ -31,7 +35,9 @@ function HomePage() {
     if (statusParam === 'solved') {
       setStatus('solved');
       setTimeout(() => {
-        document.getElementById('problems')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document
+          .getElementById('problems')
+          ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
     }
   }, [searchParams]);
@@ -53,21 +59,32 @@ function HomePage() {
   const stats = useMemo(() => {
     const total = problems?.length || 0;
     const catalogIds = new Set((problems || []).map((p) => p._id));
-    const solved = [...solvedProblemIds].filter((id) => catalogIds.has(id)).length;
+    const solved = [...solvedProblemIds].filter((id) =>
+      catalogIds.has(id)
+    ).length;
 
-    const easyTotal = (problems || []).filter((p) => p.difficulty?.toLowerCase() === 'easy').length;
+    const easyTotal = (problems || []).filter(
+      (p) => p.difficulty?.toLowerCase() === 'easy'
+    ).length;
     const easySolved = (problems || []).filter(
-      (p) => p.difficulty?.toLowerCase() === 'easy' && solvedProblemIds.has(p._id)
+      (p) =>
+        p.difficulty?.toLowerCase() === 'easy' && solvedProblemIds.has(p._id)
     ).length;
 
-    const medTotal = (problems || []).filter((p) => p.difficulty?.toLowerCase() === 'medium').length;
+    const medTotal = (problems || []).filter(
+      (p) => p.difficulty?.toLowerCase() === 'medium'
+    ).length;
     const medSolved = (problems || []).filter(
-      (p) => p.difficulty?.toLowerCase() === 'medium' && solvedProblemIds.has(p._id)
+      (p) =>
+        p.difficulty?.toLowerCase() === 'medium' && solvedProblemIds.has(p._id)
     ).length;
 
-    const hardTotal = (problems || []).filter((p) => p.difficulty?.toLowerCase() === 'hard').length;
+    const hardTotal = (problems || []).filter(
+      (p) => p.difficulty?.toLowerCase() === 'hard'
+    ).length;
     const hardSolved = (problems || []).filter(
-      (p) => p.difficulty?.toLowerCase() === 'hard' && solvedProblemIds.has(p._id)
+      (p) =>
+        p.difficulty?.toLowerCase() === 'hard' && solvedProblemIds.has(p._id)
     ).length;
 
     return {
@@ -76,16 +93,17 @@ function HomePage() {
       easy: { solved: easySolved, total: easyTotal },
       med: { solved: medSolved, total: medTotal },
       hard: { solved: hardSolved, total: hardTotal },
-      percent: total > 0 ? Math.min(100, Math.round((solved / total) * 100)) : 0,
+      percent:
+        total > 0 ? Math.min(100, Math.round((solved / total) * 100)) : 0,
     };
   }, [problems, solvedProblems, solvedProblemIds]);
 
   // Dynamic greeting based on current time
   const greeting = useMemo(() => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
+    if (hour < 12) return 'Good Morning';
+    if (hour < 18) return 'Good Afternoon';
+    return 'Good Evening';
   }, []);
 
   const displayName = user?.firstName || 'Raunak';
@@ -100,10 +118,12 @@ function HomePage() {
         problem.tags?.toLowerCase().includes(search.toLowerCase());
 
       const matchesDifficulty =
-        difficulty === 'all' || problem.difficulty?.toLowerCase() === difficulty.toLowerCase();
+        difficulty === 'all' ||
+        problem.difficulty?.toLowerCase() === difficulty.toLowerCase();
 
       const matchesTag =
-        tag === 'all' || (problem.tags && problem.tags.toLowerCase() === tag.toLowerCase());
+        tag === 'all' ||
+        (problem.tags && problem.tags.toLowerCase() === tag.toLowerCase());
 
       const matchesStatus =
         status === 'all' ||
@@ -158,7 +178,9 @@ function HomePage() {
   ];
 
   const scrollToProblems = () => {
-    document.getElementById('problems')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document
+      .getElementById('problems')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const startQuickPractice = (level) => {
@@ -176,23 +198,13 @@ function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0F131E] text-[#DFE2F2] pb-20 font-sans selection:bg-cyan-500/20 selection:text-cyan-300">
+    <div className="min-h-screen bg-[#0F131E] text-[#DFE2F2] flex flex-col font-sans selection:bg-cyan-500/20 selection:text-cyan-300">
       {/* ================= MODERN DARK NAVBAR ================= */}
       <header className="sticky top-0 z-40 bg-[#0B0F1A]/85 backdrop-blur-xl border-b border-[#263049] px-6 sm:px-10 h-16 flex items-center justify-between">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3B82F6] to-[#22D3EE] flex items-center justify-center text-[#0A0E19] font-bold text-base shadow-[0_0_16px_rgba(34,211,238,0.3)] group-hover:scale-105 transition-all duration-200">
-                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                  <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
-                </svg>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-xl font-extrabold tracking-tight text-[#DFE2F2] font-display group-hover:text-white transition-colors">
-                  HavenCode
-                </span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#5DE6FF] animate-pulse"></span>
-              </div>
+              <img src="/logo.svg" alt="HavenCode" className="h-8 sm:h-9 w-auto group-hover:scale-105 transition-all duration-200" />
             </Link>
 
             <nav className="hidden md:flex items-center gap-1 p-1 rounded-full bg-[#171B27] border border-[#263049] text-xs font-medium">
@@ -251,12 +263,16 @@ function HomePage() {
                 <li className="px-1 py-1 border-b border-[#263049] pb-2.5">
                   <div className="flex flex-col gap-0.5 p-0 hover:bg-transparent">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-[#DFE2F2] text-sm">{user?.firstName}</span>
+                      <span className="font-bold text-[#DFE2F2] text-sm">
+                        {user?.firstName}
+                      </span>
                       <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-[#262A36] text-[#94A3B8]">
                         {user?.role || 'Developer'}
                       </span>
                     </div>
-                    <span className="text-[#64748B] text-[11px] font-normal truncate">{user?.emailId}</span>
+                    <span className="text-[#64748B] text-[11px] font-normal truncate">
+                      {user?.emailId}
+                    </span>
                   </div>
                 </li>
 
@@ -265,7 +281,9 @@ function HomePage() {
                   <div className="flex flex-col gap-1.5 p-0 hover:bg-transparent">
                     <div className="flex justify-between items-center text-[11px] text-[#94A3B8]">
                       <span>Solved Progress</span>
-                      <span className="font-bold text-[#DFE2F2]">{stats.solved} / {stats.total}</span>
+                      <span className="font-bold text-[#DFE2F2]">
+                        {stats.solved} / {stats.total}
+                      </span>
                     </div>
                     <div className="w-full h-1.5 bg-[#262A36] rounded-full overflow-hidden">
                       <div
@@ -319,26 +337,32 @@ function HomePage() {
             <button
               type="button"
               onClick={scrollToProblems}
-              className="group inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#3B82F6] to-[#22D3EE] text-[#0A0E19] px-6 py-3.5 text-sm font-bold shadow-[0_0_24px_-4px_rgba(34,211,238,0.4)] hover:shadow-[0_0_32px_0px_rgba(34,211,238,0.65)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200"
+              className="group inline-flex items-center gap-3 rounded-2xl bg-gradient-to-r from-[#3B82F6] to-[#22D3EE] text-[#0A0E19] px-6 py-3.5 text-sm font-bold shadow-[0_0_24px_-4px_rgba(34,211,238,0.4)] hover:shadow-[0_0_32px_0px_rgba(34,211,238,0.65)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200"
             >
               <span className="grid h-6 w-6 place-items-center rounded-full bg-[#0A0E19]/15 text-[#0A0E19]">
-                <svg className="h-3 w-3 fill-current ml-0.5" viewBox="0 0 24 24">
+                <svg
+                  className="h-3 w-3 fill-current ml-0.5"
+                  viewBox="0 0 24 24"
+                >
                   <path d="M8 5v14l11-7z" />
                 </svg>
               </span>
               <span>Explore Problems</span>
-              <span className="transition-transform group-hover:translate-x-1 font-bold">→</span>
+              <span className="transition-transform group-hover:translate-x-1 font-bold">
+                →
+              </span>
             </button>
           </div>
         </div>
       </section>
 
-      {/* ================= QUICK PRACTICE CARD ================= */}
-      <section className="mx-auto w-full max-w-7xl px-6 sm:px-10 pb-6">
-        <div className="relative overflow-hidden rounded-[2rem] border border-[#263049] bg-[#171B27]/90 p-6 sm:p-7 shadow-soft backdrop-blur-xl">
-          <div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-center justify-between">
-            {/* Left: Icon & Title & Difficulty Pills */}
-            <div className="flex items-start sm:items-center gap-4 min-w-0 flex-1">
+      {/* ================= QUICK PRACTICE + 3D SPHERE ================= */}
+      <section className="mx-auto w-full max-w-7xl px-6 sm:px-10 pb-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+
+          {/* ── Left: Quick Practice Card ── */}
+          <div className="relative overflow-hidden rounded-[2rem] border border-[#263049] bg-[#171B27]/90 shadow-soft backdrop-blur-xl p-6 sm:p-7 lg:w-[52%] lg:shrink-0">
+            <div className="flex items-start sm:items-center gap-4 min-w-0">
               <div className="grid h-13 w-13 shrink-0 place-items-center rounded-2xl bg-[#262A36] text-[#5DE6FF] shadow-sm border border-[#424754]/40">
                 <svg className="h-6 w-6 fill-current" viewBox="0 0 24 24">
                   <path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z" />
@@ -368,7 +392,9 @@ function HomePage() {
                             : 'border-[#263049] bg-[#1B1F2B] hover:bg-[#262A36] hover:border-[#424754] text-[#DFE2F2]'
                         }`}
                       >
-                        <span className={`h-2 w-2 rounded-full ${level.dot} shadow-xs`}></span>
+                        <span
+                          className={`h-2 w-2 rounded-full ${level.dot} shadow-xs`}
+                        ></span>
                         <span>{level.label}</span>
                         <span className="text-[#64748B] group-hover:text-[#94A3B8] font-bold ml-0.5">
                           &gt;
@@ -379,19 +405,13 @@ function HomePage() {
                 </div>
               </div>
             </div>
-
-            {/* Right: Floating 3D Neumorphic Code Tile */}
-            <div className="pointer-events-none relative hidden shrink-0 lg:block pr-3">
-              <div className="grid h-20 w-20 rotate-6 place-items-center rounded-2xl border border-[#263049] bg-gradient-to-br from-[#171B27] via-[#1B1F2B] to-[#262A36] shadow-xl">
-                <span className="bg-gradient-to-br from-[#3B82F6] to-[#22D3EE] bg-clip-text font-mono text-xl font-bold text-transparent">
-                  &lt;/&gt;
-                </span>
-              </div>
-              <span className="absolute -right-1 -top-1 h-2 w-2 rotate-45 rounded-[2px] bg-[#5DE6FF]/40"></span>
-              <span className="absolute right-0 top-6 h-1 w-1 rotate-45 rounded-[2px] bg-[#3B82F6]/50"></span>
-              <span className="absolute -left-1 bottom-1 h-1.5 w-1.5 rotate-45 rounded-[2px] bg-[#22D3EE]/40"></span>
-            </div>
           </div>
+
+          {/* ── Right: Three.js 3D Sphere (outside the card, hidden on mobile) ── */}
+          <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center lg:h-[280px] xl:h-[300px]">
+            <CodeSphere />
+          </div>
+
         </div>
       </section>
 
@@ -421,7 +441,9 @@ function HomePage() {
               className="group inline-flex items-center gap-1 text-xs font-semibold text-[#5DE6FF] hover:text-[#ADC6FF] transition-colors"
             >
               <span>View details</span>
-              <span className="transition-transform group-hover:translate-x-0.5">→</span>
+              <span className="transition-transform group-hover:translate-x-0.5">
+                →
+              </span>
             </Link>
           </div>
 
@@ -474,7 +496,7 @@ function HomePage() {
       </section>
 
       {/* ================= PROBLEMS CATALOG SECTION ================= */}
-      <section id="problems" className="max-w-7xl mx-auto px-6 sm:px-10">
+      <section id="problems" className="mx-auto w-full max-w-7xl px-6 sm:px-10 pb-12 sm:pb-16">
         <div className="bg-[#171B27] rounded-3xl shadow-soft border border-[#263049] p-6 sm:p-8 space-y-6">
           {/* Header & Search */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -494,8 +516,18 @@ function HomePage() {
             {/* Search Input Bar */}
             <div className="relative w-full md:w-80">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-[#64748B]">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
               </span>
               <input
@@ -567,7 +599,10 @@ function HomePage() {
               </div>
             </div>
 
-            {(search || difficulty !== 'all' || tag !== 'all' || status !== 'all') && (
+            {(search ||
+              difficulty !== 'all' ||
+              tag !== 'all' ||
+              status !== 'all') && (
               <button
                 onClick={() => {
                   setSearch('');
@@ -587,7 +622,9 @@ function HomePage() {
             {loading ? (
               <div className="flex flex-col items-center justify-center py-24 gap-3 bg-[#171B27]">
                 <span className="w-7 h-7 border-2 border-[#5DE6FF] border-t-transparent rounded-full animate-spin"></span>
-                <span className="text-xs text-[#94A3B8] font-medium">Loading catalog...</span>
+                <span className="text-xs text-[#94A3B8] font-medium">
+                  Loading catalog...
+                </span>
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -604,17 +641,27 @@ function HomePage() {
                   <tbody className="divide-y divide-[#263049] bg-[#171B27]">
                     {filteredProblems.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="text-center py-16 text-[#94A3B8]">
+                        <td
+                          colSpan={5}
+                          className="text-center py-16 text-[#94A3B8]"
+                        >
                           <div className="text-2xl mb-1">🔍</div>
-                          <div className="font-semibold text-[#DFE2F2]">No problems found</div>
-                          <div className="text-xs text-[#64748B] mt-1">Try a different search or filter.</div>
+                          <div className="font-semibold text-[#DFE2F2]">
+                            No problems found
+                          </div>
+                          <div className="text-xs text-[#64748B] mt-1">
+                            Try a different search or filter.
+                          </div>
                         </td>
                       </tr>
                     ) : (
                       filteredProblems.map((problem) => {
                         const isSolved = solvedProblemIds.has(problem._id);
                         return (
-                          <tr key={problem._id} className="hover:bg-[#1B1F2B] transition-colors group">
+                          <tr
+                            key={problem._id}
+                            className="hover:bg-[#1B1F2B] transition-colors group"
+                          >
                             <td className="py-4 px-6">
                               {isSolved ? (
                                 <span className="w-6 h-6 rounded-full bg-emerald-950/60 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-xs font-bold shadow-xs">
@@ -634,7 +681,9 @@ function HomePage() {
                                 <span>{problem.title}</span>
                               </Link>
                             </td>
-                            <td className="py-4 px-6">{getDifficultyBadge(problem.difficulty)}</td>
+                            <td className="py-4 px-6">
+                              {getDifficultyBadge(problem.difficulty)}
+                            </td>
                             <td className="py-4 px-6">
                               {problem.tags && (
                                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium bg-[#1B1F2B] text-[#94A3B8] capitalize border border-[#263049]">
@@ -661,6 +710,7 @@ function HomePage() {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }

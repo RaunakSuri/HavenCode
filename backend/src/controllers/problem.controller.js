@@ -144,8 +144,24 @@ const getProblem = async (req, res) => {
       return res.status(404).send("Problem ID Not Defined");
     }
     const getProblem = await Problem.findById(id).select(
-      "_id title description difficulty tags visibleTestCases startCode referenceSolution",
+      "_id title description difficulty tags visibleTestCases startCode",
     );
+    if (!getProblem) {
+      return res.status(404).send("Problem Does Not Exist");
+    }
+    return res.status(200).send(getProblem);
+  } catch (error) {
+    res.status(500).send(`Error Encountered : ${error}`);
+  }
+};
+
+const getProblemAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).send("Problem ID Not Defined");
+    }
+    const getProblem = await Problem.findById(id);
     if (!getProblem) {
       return res.status(404).send("Problem Does Not Exist");
     }
@@ -199,6 +215,7 @@ export {
   updateProblem,
   deleteProblem,
   getProblem,
+  getProblemAdmin,
   getAllProblems,
   getSolvedProblems,
   submittedSolutions,
