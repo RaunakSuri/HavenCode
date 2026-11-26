@@ -1,6 +1,6 @@
 # HavenCode
 
-HavenCode is a full-stack coding practice platform inspired by LeetCode. It lets users solve DSA problems in a browser-based code editor, execute code against visible test cases, submit solutions against hidden test cases, review submission history, track progress, and chat with an AI coding assistant.
+HavenCode is a full-stack coding practice platform. It lets users solve DSA problems in a browser-based code editor, execute code against visible test cases, submit solutions against hidden test cases, review submission history, track progress, and chat with an AI coding assistant.
 
 It also includes a protected admin console for creating, editing, and deleting coding problems.
 
